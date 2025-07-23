@@ -3,14 +3,13 @@ package com.example.proyectomovil;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
+import android.os.Handler;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.GravityCompat;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.charts.BarChart;
@@ -23,19 +22,34 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final Handler handler = new Handler();
+    private Runnable updateTask;
+    private DrawerLayout drawerLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Referencias a los gráficos
+        // Referencias de los gráficos circulares
         PieChart dashTemperatura = findViewById(R.id.dashTemperatura);
         PieChart dashHumedad = findViewById(R.id.dashHumedad);
         PieChart dashGas = findViewById(R.id.dashGas);
@@ -43,15 +57,91 @@ public class MainActivity extends AppCompatActivity {
         PieChart dashHumedadSuelo = findViewById(R.id.dashHumedadSuelo);
         BarChart dashHistorico = findViewById(R.id.dashHistorico);
 
-        // Datos ejemplo para PieCharts
-        setupPieChart(dashTemperatura, 28f, Color.parseColor("#3F51B5"), 35f, "mayor");         // Temperatura: crítica si supera 35
-        setupPieChart(dashHumedad, 48f, Color.parseColor("#4CAF50"), 40f, "mayor");              // Humedad: crítica si supera 40
-        setupPieChart(dashGas, 12f, Color.parseColor("#FF9800"), 15f, "mayor");                 // Gas: crítica si supera 15
-        setupPieChart(dashTemperaturaSuelo, 20f, Color.parseColor("#9C27B0"), 15f, "menor");    // Temp Suelo: crítica si baja de 15
-        setupPieChart(dashHumedadSuelo, 35f, Color.parseColor("#607D8B"), 30f, "menor");        // Humedad Suelo: crítica si baja de 30
-        // Datos ejemplo para BarChart
-        setupBarChart(dashHistorico);
+        int userId = getIntent().getIntExtra("USER_ID", -1);
+        if (userId != -1) {
+            updateTask = new Runnable() {
+                @Override
+                public void run() {
+                    fetchSensorData(userId);
+                    handler.postDelayed(this, 10000); // Repetir cada 10 segundos
+                }
+            };
+            handler.post(updateTask); // Inicia el ciclo
+        }
+
+        setupBarChart(dashHistorico); // Esto puedes mantener para histórico simulado
+
+        //navegacion menu
+        drawerLayout = findViewById(R.id.drawer_layout);
+
+        ImageView btnMenu = findViewById(R.id.btn_menu);
+        btnMenu.setOnClickListener(v -> {
+            drawerLayout.openDrawer(GravityCompat.START); // ✅ Abre el menú lateral
+        });
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.nav_profile) {
+                Toast.makeText(this, "Perfil seleccionado", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_settings) {
+                Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_logout) {
+                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
+            }
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
+        });
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        handler.removeCallbacks(updateTask); // ✅ Detiene el ciclo de actualizaciones
+    }
+    private void fetchSensorData(int userId) {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://192.168.0.4/ProyectoGrado/get_last_reading.php?idUser=" + userId;
+
+        Request request = new Request.Builder().url(url).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error de red", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String resp = response.body().string();
+                try {
+                    JSONObject json = new JSONObject(resp);
+                    if (json.getBoolean("success")) {
+                        JSONObject data = json.getJSONObject("data");
+
+                        float temperatura = (float) data.getDouble("temperature");
+                        float humedad = (float) data.getDouble("humidity");
+                        float tempSuelo = (float) data.getDouble("ds18b20_temp");
+                        float humedadSuelo = (float) data.getDouble("soil_moisture");
+                        float gas = (float) data.getDouble("mq135");
+
+                        runOnUiThread(() -> {
+                            setupPieChart(findViewById(R.id.dashTemperatura), temperatura, Color.parseColor("#7FE1AD"), 35f, "mayor");
+                            setupPieChart(findViewById(R.id.dashHumedad), humedad, Color.parseColor("#F85F6A"), 40f, "mayor");
+                            setupPieChart(findViewById(R.id.dashGas), gas, Color.parseColor("#5F6AF8"), 15f, "mayor");
+                            setupPieChart(findViewById(R.id.dashTemperaturaSuelo), tempSuelo, Color.parseColor("#2F073B"), 15f, "menor");
+                            setupPieChart(findViewById(R.id.dashHumedadSuelo), humedadSuelo, Color.parseColor("#C238EB"), 30f, "menor");
+                        });
+                    } else {
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, "Sin datos encontrados", Toast.LENGTH_SHORT).show());
+                    }
+                } catch (JSONException e) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear respuesta", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
+    }
+
     private void setupPieChart(PieChart chart, float value, int ringColor, float limiteMax, String modoCritico) {
         chart.setUsePercentValues(true);
         chart.getDescription().setEnabled(false);
@@ -74,14 +164,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 centerColor = Color.parseColor("#4CAF50"); // verde
             }
-        } else if (modoCritico.equals("menor")) {
-            // Ej: si baja del valor -> color rojo
-            if (value < limiteMax) {
-                centerColor = Color.parseColor("#F44336"); // rojo
-            } else {
-                centerColor = Color.parseColor("#4CAF50"); // verde
-            }
-        } else {
+        }
+        else {
             // Por defecto: gris
             centerColor = Color.DKGRAY;
         }
@@ -98,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         entries.add(new PieEntry(100f - value, ""));
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(ringColor, Color.TRANSPARENT);
+        dataSet.setColors(ringColor, Color.LTGRAY);
         dataSet.setDrawValues(false);
 
         PieData data = new PieData(dataSet);
