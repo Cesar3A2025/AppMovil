@@ -53,68 +53,45 @@ public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private Runnable updateTask;
     private DrawerLayout drawerLayout;
+    private PieChart chartGases; // ⬅ Referencia global
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        // Referencias de los gráficos circulares
         PieChart dashTemperatura = findViewById(R.id.dashTemperatura);
         PieChart dashHumedad = findViewById(R.id.dashHumedad);
         PieChart dashGas = findViewById(R.id.dashGas);
         PieChart dashTemperaturaSuelo = findViewById(R.id.dashTemperaturaSuelo);
         PieChart dashHumedadSuelo = findViewById(R.id.dashHumedadSuelo);
         LineChart dashHistorico = findViewById(R.id.dashHistorico);
+        chartGases = findViewById(R.id.chartGases); // ⬅ Inicializamos
 
         int userId = getIntent().getIntExtra("USER_ID", -1);
         if (userId != -1) {
-            updateTask = new Runnable() {
-                @Override
-                public void run() {
-                    fetchSensorData(userId);
-                    handler.postDelayed(this, 10000); // Repetir cada 10 segundos
-                }
+            updateTask = () -> {
+                fetchSensorData(userId);
+                handler.postDelayed(updateTask, 10000); // cada 10s
             };
-            handler.post(updateTask); // Inicia el ciclo
+            handler.post(updateTask);
         }
 
         setupLineChart(dashHistorico);
 
-        //navegacion menu
         drawerLayout = findViewById(R.id.drawer_layout);
-
         ImageView btnMenu = findViewById(R.id.btn_menu);
-        btnMenu.setOnClickListener(v -> {
-            drawerLayout.openDrawer(GravityCompat.START); //  Abre el menú lateral
-        });
+        btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-
         View headerView = navigationView.getHeaderView(0);
-        TextView tvName = headerView.findViewById(R.id.tvHeaderName);
-        TextView tvEmail = headerView.findViewById(R.id.tvHeaderEmail);
-
-        String name = getIntent().getStringExtra("USER_NAME");
-        String email = getIntent().getStringExtra("USER_EMAIL");
-
-        tvName.setText(name);
-        tvEmail.setText(email);
-
+        ((TextView) headerView.findViewById(R.id.tvHeaderName)).setText(getIntent().getStringExtra("USER_NAME"));
+        ((TextView) headerView.findViewById(R.id.tvHeaderEmail)).setText(getIntent().getStringExtra("USER_EMAIL"));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-
-            if (id == R.id.nav_home) {
-                Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_reports) {
-                Toast.makeText(this, "Reportes", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_customers) {
-                Toast.makeText(this, "Clientes", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_settings) {
-                Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
-            }
-
+            Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
@@ -125,8 +102,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(updateTask); // Detiene el ciclo de actualizaciones
+        handler.removeCallbacks(updateTask);
     }
+
     private void fetchSensorData(int userId) {
         OkHttpClient client = new OkHttpClient();
         String url = "http://192.168.0.7/ProyectoGrado/get_last_reading.php?idUser=" + userId;
@@ -153,15 +131,24 @@ public class MainActivity extends AppCompatActivity {
                         float humedadSuelo = (float) data.getDouble("soil_moisture");
                         float gas = (float) data.getDouble("mq135");
 
+                        // Datos para gráfico de gases
+                        float nh3 = (float) data.getDouble("ammonia");
+                        float co2 = (float) data.getDouble("co2");
+                        float co = (float) data.getDouble("co");
+                        float benzene = (float) data.getDouble("benzene");
+                        float alcohol = (float) data.getDouble("alcohol");
+                        float smoke = (float) data.getDouble("smoke");
+
                         runOnUiThread(() -> {
                             setupPieChart(findViewById(R.id.dashTemperatura), temperatura, Color.parseColor("#7FE1AD"), 35f, "mayor");
                             setupPieChart(findViewById(R.id.dashHumedad), humedad, Color.parseColor("#F85F6A"), 40f, "mayor");
                             setupPieChart(findViewById(R.id.dashGas), gas, Color.parseColor("#5F6AF8"), 15f, "mayor");
                             setupPieChart(findViewById(R.id.dashTemperaturaSuelo), tempSuelo, Color.parseColor("#2F073B"), 15f, "menor");
                             setupPieChart(findViewById(R.id.dashHumedadSuelo), humedadSuelo, Color.parseColor("#C238EB"), 30f, "menor");
+
+                            // Aquí actualizas el gráfico de gases
+                            setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
                         });
-                    } else {
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, "Sin datos encontrados", Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
                     runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear respuesta", Toast.LENGTH_SHORT).show());
@@ -177,34 +164,17 @@ public class MainActivity extends AppCompatActivity {
         chart.setHoleRadius(80f);
         chart.setTransparentCircleRadius(0f);
         chart.setHoleColor(Color.TRANSPARENT);
-        chart.setBackgroundColor(Color.TRANSPARENT);
-        chart.setRotationEnabled(false);
         chart.setDrawEntryLabels(false);
         chart.getLegend().setEnabled(false);
 
-        // Determinar color del texto según sensor y criterio
-        int centerColor;
+        int centerColor = modoCritico.equals("mayor") && value > limiteMax
+                ? Color.parseColor("#F44336") : Color.parseColor("#4CAF50");
 
-        if (modoCritico.equals("mayor")) {
-            //si excede el valor -> color rojo
-            if (value > limiteMax) {
-                centerColor = Color.parseColor("#F44336"); // rojo
-            } else {
-                centerColor = Color.parseColor("#4CAF50"); // verde
-            }
-        }
-        else {
-            // Por defecto: gris
-            centerColor = Color.DKGRAY;
-        }
-
-        // Texto en el centro
         chart.setCenterText((int) value + "%");
         chart.setCenterTextSize(16f);
         chart.setCenterTextColor(centerColor);
         chart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
 
-        // Datos
         List<PieEntry> entries = new ArrayList<>();
         entries.add(new PieEntry(value, ""));
         entries.add(new PieEntry(100f - value, ""));
@@ -213,11 +183,41 @@ public class MainActivity extends AppCompatActivity {
         dataSet.setColors(ringColor, Color.LTGRAY);
         dataSet.setDrawValues(false);
 
-        PieData data = new PieData(dataSet);
-        chart.setData(data);
+        chart.setData(new PieData(dataSet));
         chart.invalidate();
     }
 
+    private void setupGasChart(PieChart chart, float nh3, float co2, float co, float benzene, float alcohol, float smoke) {
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(nh3, "NH₃"));
+        entries.add(new PieEntry(co2, "CO₂"));
+        entries.add(new PieEntry(co, "CO"));
+        entries.add(new PieEntry(benzene, "Benceno"));
+        entries.add(new PieEntry(alcohol, "Alcohol"));
+        entries.add(new PieEntry(smoke, "Humo"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "Composición Estimada de Gases");
+        dataSet.setColors(new int[]{
+                Color.rgb(76, 175, 80), Color.rgb(255, 152, 0),
+                Color.RED, Color.BLUE, Color.MAGENTA, Color.DKGRAY
+        });
+
+        dataSet.setSliceSpace(2f);
+        dataSet.setValueTextSize(12f);
+        dataSet.setValueTextColor(Color.BLACK);
+
+        chart.setData(new PieData(dataSet));
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleRadius(50f);
+        chart.setTransparentCircleRadius(55f);
+        chart.setEntryLabelColor(Color.BLACK);
+        chart.setEntryLabelTextSize(12f);
+        chart.getDescription().setEnabled(false);
+        chart.setCenterText("Composición de Gases");
+        chart.setCenterTextSize(14f);
+        chart.getLegend().setEnabled(true);
+        chart.invalidate();
+    }
 
     private void setupLineChart(LineChart chart) {
         chart.getDescription().setEnabled(false);
@@ -251,13 +251,11 @@ public class MainActivity extends AppCompatActivity {
                         List<Entry> dsEntries = new ArrayList<>();
                         List<Entry> soilEntries = new ArrayList<>();
                         List<Entry> gasEntries = new ArrayList<>();
-
                         List<String> labels = new ArrayList<>();
 
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject d = dataArray.getJSONObject(i);
                             labels.add(d.getString("datetime"));
-
                             tempEntries.add(new Entry(i, (float) d.getDouble("temperature")));
                             humidityEntries.add(new Entry(i, (float) d.getDouble("humidity")));
                             dsEntries.add(new Entry(i, (float) d.getDouble("ds18b20_temp")));
@@ -279,57 +277,39 @@ public class MainActivity extends AppCompatActivity {
                                  List<Entry> soil, List<Entry> gas) {
 
         LineDataSet setTemp = new LineDataSet(temp, "Temp. (°C)");
-
-        setTemp.setColor(Color.RED);
-        setTemp.setLineWidth(2f);
-        setTemp.setCircleColor(Color.RED);
+        setTemp.setColor(Color.RED); setTemp.setLineWidth(2f); setTemp.setCircleColor(Color.RED);
 
         LineDataSet setHum = new LineDataSet(hum, "Humedad (%)");
-        setHum.setColor(Color.BLUE);
-        setHum.setLineWidth(2f);
-        setHum.setCircleColor(Color.BLUE);
+        setHum.setColor(Color.BLUE); setHum.setLineWidth(2f); setHum.setCircleColor(Color.BLUE);
 
         LineDataSet setDS = new LineDataSet(ds, "Temp. DS18B20 (°C)");
-        setDS.setColor(Color.rgb(255, 165, 0)); // naranja
-        setDS.setLineWidth(2f);
-        setDS.setCircleColor(Color.rgb(255, 165, 0));
+        setDS.setColor(Color.rgb(255, 165, 0)); setDS.setLineWidth(2f); setDS.setCircleColor(Color.rgb(255, 165, 0));
 
         LineDataSet setSoil = new LineDataSet(soil, "Humedad Suelo (%)");
-        setSoil.setColor(Color.MAGENTA);
-        setSoil.setLineWidth(2f);
-        setSoil.setCircleColor(Color.MAGENTA);
+        setSoil.setColor(Color.MAGENTA); setSoil.setLineWidth(2f); setSoil.setCircleColor(Color.MAGENTA);
 
         LineDataSet setGas = new LineDataSet(gas, "MQ-135 (calidad)");
-        setGas.setColor(Color.GREEN);
-        setGas.setLineWidth(2f);
-        setGas.setCircleColor(Color.GREEN);
+        setGas.setColor(Color.GREEN); setGas.setLineWidth(2f); setGas.setCircleColor(Color.GREEN);
 
         LineData lineData = new LineData(setTemp, setHum, setDS, setSoil, setGas);
-
         chart.setData(lineData);
-        chart.getDescription().setEnabled(false);
         chart.getAxisRight().setEnabled(false);
 
-// Configurar eje X con fechas
+        // Eje X con fechas
         XAxis xAxis = chart.getXAxis();
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setLabelRotationAngle(-45);
         xAxis.setLabelCount(labels.size(), true);
-
-// Formateador para mostrar fecha en X
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
                 int index = (int) value;
-                if (index >= 0 && index < labels.size()) {
-                    return labels.get(index);
-                } else {
-                    return "";
-                }
+                return (index >= 0 && index < labels.size()) ? labels.get(index) : "";
             }
         });
+
         chart.invalidate();
     }
 }
