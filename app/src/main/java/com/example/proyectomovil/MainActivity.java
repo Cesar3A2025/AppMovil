@@ -4,15 +4,21 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieData;
@@ -22,6 +28,10 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.components.XAxis;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         PieChart dashGas = findViewById(R.id.dashGas);
         PieChart dashTemperaturaSuelo = findViewById(R.id.dashTemperaturaSuelo);
         PieChart dashHumedadSuelo = findViewById(R.id.dashHumedadSuelo);
-        BarChart dashHistorico = findViewById(R.id.dashHistorico);
+        LineChart dashHistorico = findViewById(R.id.dashHistorico);
 
         int userId = getIntent().getIntExtra("USER_ID", -1);
         if (userId != -1) {
@@ -69,39 +79,57 @@ public class MainActivity extends AppCompatActivity {
             handler.post(updateTask); // Inicia el ciclo
         }
 
-        setupBarChart(dashHistorico); // Esto puedes mantener para histórico simulado
+        setupLineChart(dashHistorico);
 
         //navegacion menu
         drawerLayout = findViewById(R.id.drawer_layout);
 
         ImageView btnMenu = findViewById(R.id.btn_menu);
         btnMenu.setOnClickListener(v -> {
-            drawerLayout.openDrawer(GravityCompat.START); // ✅ Abre el menú lateral
+            drawerLayout.openDrawer(GravityCompat.START); //  Abre el menú lateral
         });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvName = headerView.findViewById(R.id.tvHeaderName);
+        TextView tvEmail = headerView.findViewById(R.id.tvHeaderEmail);
+
+        String name = getIntent().getStringExtra("USER_NAME");
+        String email = getIntent().getStringExtra("USER_EMAIL");
+
+        tvName.setText(name);
+        tvEmail.setText(email);
+
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_profile) {
-                Toast.makeText(this, "Perfil seleccionado", Toast.LENGTH_SHORT).show();
+
+            if (id == R.id.nav_home) {
+                Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_reports) {
+                Toast.makeText(this, "Reportes", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_customers) {
+                Toast.makeText(this, "Clientes", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
-            } else if (id == R.id.nav_logout) {
-                Toast.makeText(this, "Cerrar sesión", Toast.LENGTH_SHORT).show();
             }
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+        fetchHistoricalData(userId, dashHistorico);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(updateTask); // ✅ Detiene el ciclo de actualizaciones
+        handler.removeCallbacks(updateTask); // Detiene el ciclo de actualizaciones
     }
     private void fetchSensorData(int userId) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://192.168.0.4/ProyectoGrado/get_last_reading.php?idUser=" + userId;
+        String url = "http://192.168.0.7/ProyectoGrado/get_last_reading.php?idUser=" + userId;
 
         Request request = new Request.Builder().url(url).build();
 
@@ -154,11 +182,11 @@ public class MainActivity extends AppCompatActivity {
         chart.setDrawEntryLabels(false);
         chart.getLegend().setEnabled(false);
 
-        // 💥 Determinar color del texto según sensor y criterio
+        // Determinar color del texto según sensor y criterio
         int centerColor;
 
         if (modoCritico.equals("mayor")) {
-            // Ej: si excede el valor -> color rojo
+            //si excede el valor -> color rojo
             if (value > limiteMax) {
                 centerColor = Color.parseColor("#F44336"); // rojo
             } else {
@@ -191,23 +219,117 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setupBarChart(BarChart barChart) {
-        barChart.getDescription().setEnabled(false);
-        barChart.getAxisRight().setEnabled(false);
+    private void setupLineChart(LineChart chart) {
+        chart.getDescription().setEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setPinchZoom(true);
+        chart.getAxisRight().setEnabled(false);
+    }
 
-        java.util.List<BarEntry> entries = new java.util.ArrayList<>();
-        entries.add(new BarEntry(1f, 60f));
-        entries.add(new BarEntry(2f, 40f));
-        entries.add(new BarEntry(3f, 75f));
-        entries.add(new BarEntry(4f, 30f));
+    private void fetchHistoricalData(int userId, LineChart chart) {
+        OkHttpClient client = new OkHttpClient();
+        String url = "http://192.168.0.7/ProyectoGrado/get_historical_readings.php?idUser=" + userId;
 
-        BarDataSet dataSet = new BarDataSet(entries, "Histórico");
-        dataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        Request request = new Request.Builder().url(url).build();
 
-        BarData data = new BarData(dataSet);
-        data.setBarWidth(0.9f);
-        barChart.setData(data);
-        barChart.setFitBars(true);
-        barChart.invalidate();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al obtener histórico", Toast.LENGTH_SHORT).show());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json = response.body().string();
+                try {
+                    JSONObject obj = new JSONObject(json);
+                    if (obj.getBoolean("success")) {
+                        JSONArray dataArray = obj.getJSONArray("data");
+
+                        List<Entry> tempEntries = new ArrayList<>();
+                        List<Entry> humidityEntries = new ArrayList<>();
+                        List<Entry> dsEntries = new ArrayList<>();
+                        List<Entry> soilEntries = new ArrayList<>();
+                        List<Entry> gasEntries = new ArrayList<>();
+
+                        List<String> labels = new ArrayList<>();
+
+                        for (int i = 0; i < dataArray.length(); i++) {
+                            JSONObject d = dataArray.getJSONObject(i);
+                            labels.add(d.getString("datetime"));
+
+                            tempEntries.add(new Entry(i, (float) d.getDouble("temperature")));
+                            humidityEntries.add(new Entry(i, (float) d.getDouble("humidity")));
+                            dsEntries.add(new Entry(i, (float) d.getDouble("ds18b20_temp")));
+                            soilEntries.add(new Entry(i, (float) d.getDouble("soil_moisture")));
+                            gasEntries.add(new Entry(i, (float) d.getDouble("mq135")));
+                        }
+
+                        runOnUiThread(() -> updateLineChart(chart, labels, tempEntries, humidityEntries, dsEntries, soilEntries, gasEntries));
+                    }
+                } catch (JSONException e) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear histórico", Toast.LENGTH_SHORT).show());
+                }
+            }
+        });
+    }
+
+    private void updateLineChart(LineChart chart, List<String> labels,
+                                 List<Entry> temp, List<Entry> hum, List<Entry> ds,
+                                 List<Entry> soil, List<Entry> gas) {
+
+        LineDataSet setTemp = new LineDataSet(temp, "Temp. (°C)");
+
+        setTemp.setColor(Color.RED);
+        setTemp.setLineWidth(2f);
+        setTemp.setCircleColor(Color.RED);
+
+        LineDataSet setHum = new LineDataSet(hum, "Humedad (%)");
+        setHum.setColor(Color.BLUE);
+        setHum.setLineWidth(2f);
+        setHum.setCircleColor(Color.BLUE);
+
+        LineDataSet setDS = new LineDataSet(ds, "Temp. DS18B20 (°C)");
+        setDS.setColor(Color.rgb(255, 165, 0)); // naranja
+        setDS.setLineWidth(2f);
+        setDS.setCircleColor(Color.rgb(255, 165, 0));
+
+        LineDataSet setSoil = new LineDataSet(soil, "Humedad Suelo (%)");
+        setSoil.setColor(Color.MAGENTA);
+        setSoil.setLineWidth(2f);
+        setSoil.setCircleColor(Color.MAGENTA);
+
+        LineDataSet setGas = new LineDataSet(gas, "MQ-135 (calidad)");
+        setGas.setColor(Color.GREEN);
+        setGas.setLineWidth(2f);
+        setGas.setCircleColor(Color.GREEN);
+
+        LineData lineData = new LineData(setTemp, setHum, setDS, setSoil, setGas);
+
+        chart.setData(lineData);
+        chart.getDescription().setEnabled(false);
+        chart.getAxisRight().setEnabled(false);
+
+// Configurar eje X con fechas
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setLabelRotationAngle(-45);
+        xAxis.setLabelCount(labels.size(), true);
+
+// Formateador para mostrar fecha en X
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                int index = (int) value;
+                if (index >= 0 && index < labels.size()) {
+                    return labels.get(index);
+                } else {
+                    return "";
+                }
+            }
+        });
+        chart.invalidate();
     }
 }

@@ -62,8 +62,8 @@ public class LoginActivity extends AppCompatActivity {
                 .add("password", password)
                 .build();
 
-        // Cambia esta URL por la ruta real a tu archivo PHP
-        String url = "http://192.168.0.4/ProyectoGrado/login.php"; // O tu IP real en red local
+        //URL por la ruta real a tu archivo PHP
+        String url = "http://192.168.0.7/ProyectoGrado/login.php"; // O tu IP real en red local
 
         Request request = new Request.Builder()
                 .url(url)
@@ -89,10 +89,12 @@ public class LoginActivity extends AppCompatActivity {
                     if (success) {
                         int userId = json.getInt("id");
                         String name = json.getString("name");
+                        String email = json.getString("email");
 
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.putExtra("USER_ID", userId);
                         intent.putExtra("USER_NAME", name);
+                        intent.putExtra("USER_EMAIL", email);
                         startActivity(intent);
                         finish();
                     } else {
