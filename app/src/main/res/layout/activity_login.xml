@@ -1,54 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
-    android:background="#f5f5f5"
-    tools:context=".LoginActivity">
+    android:layout_height="match_parent">
 
-    <!-- Título del login -->
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Iniciar Sesión"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_marginBottom="32dp" />
+    <!-- Fondo como imagen escalada correctamente -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/login_background"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null" />
 
-    <!-- Campo Usuario -->
-    <EditText
-        android:id="@+id/etUsername"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp">
+
+    <LinearLayout
+        android:id="@+id/loginBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Usuario"
-        android:inputType="textPersonName"
-        android:background="@android:drawable/edit_text"
-        android:padding="10dp"
-        android:layout_marginBottom="16dp" />
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:elevation="4dp"
+        android:padding="24dp"
+        android:layout_marginTop="240dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#FFFFFF"
+        android:clipToPadding="false"
+        android:gravity="center_horizontal">
 
-    <!-- Campo Contraseña -->
-    <EditText
-        android:id="@+id/etPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:background="@android:drawable/edit_text"
-        android:padding="10dp"
-        android:layout_marginBottom="24dp" />
+        <!-- Usuario -->
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_style"
+            android:textColor="#000000"
+            android:textColorHint="#858D67" />
 
-    <!-- Botón de login -->
-    <Button
-        android:id="@+id/btnLogin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ingresar"
-        android:backgroundTint="#3F51B5"
-        android:textColor="#FFFFFF" />
-</LinearLayout>
+        <!-- Contraseña -->
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/login_style"
+            android:textColor="#000000"
+            android:textColorHint="#858D67" />
+
+        <!-- Botón Login -->
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Iniciar Sesión"
+            android:textStyle="bold"
+            android:backgroundTint="#000000"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Registrarse"
+            android:textStyle="bold"
+            android:backgroundTint="#000000"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Olvidé contraseña -->
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¿Olvido su contraseña?"
+            android:textColor="#ffffff"
+            android:textSize="14sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+</RelativeLayout>
+</FrameLayout>

@@ -25,7 +25,7 @@ import okhttp3.Response;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etUsername, etPassword;
-    private Button btnLogin;
+    private Button btnLogin, btnRegister;
     private ProgressDialog progressDialog;
     private OkHttpClient client;
 
@@ -36,11 +36,16 @@ public class LoginActivity extends AppCompatActivity {
 
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
-        btnLogin = findViewById(R.id.btnLogin);
 
-        client = new OkHttpClient();
+        btnLogin = findViewById(R.id.btnLogin);
+        btnRegister = findViewById(R.id.btnRegister);
 
         btnLogin.setOnClickListener(v -> login());
+        btnRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+            startActivity(intent);
+        });
+        client = new OkHttpClient();
     }
 
     private void login() {
@@ -62,8 +67,7 @@ public class LoginActivity extends AppCompatActivity {
                 .add("password", password)
                 .build();
 
-        //URL por la ruta real a tu archivo PHP
-        String url = "http://192.168.0.7/ProyectoGrado/login.php"; // O tu IP real en red local
+        String url = MainActivity.Constants.BASE_URL+"login";
 
         Request request = new Request.Builder()
                 .url(url)

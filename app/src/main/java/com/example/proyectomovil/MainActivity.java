@@ -1,5 +1,6 @@
 package com.example.proyectomovil;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -15,18 +16,13 @@ import androidx.core.view.GravityCompat;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.charts.BarChart;
+
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.utils.ColorTemplate;
-
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
 
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.components.XAxis;
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private Runnable updateTask;
     private DrawerLayout drawerLayout;
-    private PieChart chartGases; // ⬅ Referencia global
+    private PieChart chartGases;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,19 +57,15 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
-        PieChart dashTemperatura = findViewById(R.id.dashTemperatura);
-        PieChart dashHumedad = findViewById(R.id.dashHumedad);
-        PieChart dashGas = findViewById(R.id.dashGas);
-        PieChart dashTemperaturaSuelo = findViewById(R.id.dashTemperaturaSuelo);
-        PieChart dashHumedadSuelo = findViewById(R.id.dashHumedadSuelo);
         LineChart dashHistorico = findViewById(R.id.dashHistorico);
-        chartGases = findViewById(R.id.chartGases); // ⬅ Inicializamos
+        chartGases = findViewById(R.id.chartGases); //Inicializamos
 
         int userId = getIntent().getIntExtra("USER_ID", -1);
         if (userId != -1) {
             updateTask = () -> {
                 fetchSensorData(userId);
-                handler.postDelayed(updateTask, 10000); // cada 10s
+                fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
+                handler.postDelayed(updateTask, 2000); //cada 2s
             };
             handler.post(updateTask);
         }
@@ -82,21 +74,41 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         ImageView btnMenu = findViewById(R.id.btn_menu);
+
         btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+
         View headerView = navigationView.getHeaderView(0);
         ((TextView) headerView.findViewById(R.id.tvHeaderName)).setText(getIntent().getStringExtra("USER_NAME"));
         ((TextView) headerView.findViewById(R.id.tvHeaderEmail)).setText(getIntent().getStringExtra("USER_EMAIL"));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
-            Toast.makeText(this, item.getTitle(), Toast.LENGTH_SHORT).show();
+
+            if (id == R.id.nav_home) {
+                Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show();
+            } else if (id == R.id.nav_reports) {
+                Intent intent = new Intent(this, Reports.class);
+                intent.putExtra("USER_ID", userId);
+                intent.putExtra("USER_NAME", getIntent().getStringExtra("USER_NAME"));
+                startActivity(intent);
+            } else if (id == R.id.nav_customers) {
+                Intent intent = new Intent(this, EditUser.class);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
+            } else if (id == R.id.nav_settings) {
+                Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
+            }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
         fetchHistoricalData(userId, dashHistorico);
+    }
+
+    public class Constants {
+        public static final String BASE_URL = "http://192.168.0.7/composta_esp33/public/api/";
     }
 
     @Override
@@ -106,8 +118,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchSensorData(int userId) {
+
         OkHttpClient client = new OkHttpClient();
-        String url = "http://192.168.0.7/ProyectoGrado/get_last_reading.php?idUser=" + userId;
+
+        String url = Constants.BASE_URL+"get_last_reading?idUser=" + userId;
 
         Request request = new Request.Builder().url(url).build();
 
@@ -140,13 +154,14 @@ public class MainActivity extends AppCompatActivity {
                         float smoke = (float) data.getDouble("smoke");
 
                         runOnUiThread(() -> {
+                            //Actilizacion de graficos circulares
                             setupPieChart(findViewById(R.id.dashTemperatura), temperatura, Color.parseColor("#7FE1AD"), 35f, "mayor");
                             setupPieChart(findViewById(R.id.dashHumedad), humedad, Color.parseColor("#F85F6A"), 40f, "mayor");
                             setupPieChart(findViewById(R.id.dashGas), gas, Color.parseColor("#5F6AF8"), 15f, "mayor");
                             setupPieChart(findViewById(R.id.dashTemperaturaSuelo), tempSuelo, Color.parseColor("#2F073B"), 15f, "menor");
                             setupPieChart(findViewById(R.id.dashHumedadSuelo), humedadSuelo, Color.parseColor("#C238EB"), 30f, "menor");
 
-                            // Aquí actualizas el gráfico de gases
+                            // Actualizacion de gráfico de gases
                             setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
                         });
                     }
@@ -228,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void fetchHistoricalData(int userId, LineChart chart) {
         OkHttpClient client = new OkHttpClient();
-        String url = "http://192.168.0.7/ProyectoGrado/get_historical_readings.php?idUser=" + userId;
+        String url = Constants.BASE_URL+"get_historical_readings?idUser=" + userId;
 
         Request request = new Request.Builder().url(url).build();
 
