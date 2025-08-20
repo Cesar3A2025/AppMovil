@@ -66,7 +66,8 @@ public class RegisterActivity extends AppCompatActivity {
                 .add("password", password)
                 .build();
 
-        String url = MainActivity.Constants.BASE_URL+"register_user.php"; //IP
+        String url = MainActivity.Constants.BASE_URL+"register_user.php";
+
 
         Request request = new Request.Builder().url(url).post(formBody).build();
 
