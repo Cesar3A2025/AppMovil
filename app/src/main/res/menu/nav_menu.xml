@@ -2,21 +2,27 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/home"
-        android:title="Home" />
+        android:title="Inicio" />
 
     <item
         android:id="@+id/nav_reports"
         android:icon="@drawable/report"
-        android:title="Reports" />
+        android:title="Reportes" />
+
+    <item
+        android:id="@+id/nav_materials"
+        android:icon="@drawable/settings"
+        android:title="Materiales" />
 
     <item
         android:id="@+id/nav_customers"
         android:icon="@drawable/user"
-        android:title="Customers" />
+        android:title="Perfil" />
 
 
     <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/settings"
-        android:title="Settings" />
+        android:title="Configuracion" />
+
 </menu>

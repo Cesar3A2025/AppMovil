@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.annotationProcessor
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -32,6 +34,15 @@ android {
 }
 
 dependencies {
+
+    implementation("androidx.recyclerview:recyclerview:1.3.2")
+    implementation("io.coil-kt:coil:2.6.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.16.0")
+
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
     implementation(libs.appcompat)

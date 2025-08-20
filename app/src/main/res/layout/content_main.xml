@@ -1,9 +1,49 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f5f5f5"
+    tools:context=".MainActivity"
+    >
+
+    <LinearLayout
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="40dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        >
+
+        <ImageView
+            android:id="@+id/btn_menu"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/menu"
+            android:contentDescription="Menú"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="20dp"
+            android:padding="4dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Inicio"
+            android:textColor="#212121"
+            android:layout_marginTop="20dp"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -11,45 +51,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="24dp"
-        >
+        android:padding="24dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="16dp"
-            android:layout_marginTop="16dp"
-            >
-            <ImageView
-                android:id="@+id/btn_menu"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/menu"
-                android:contentDescription="Menú"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="4dp" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="Reporte"
-                android:textAlignment="center"
-                android:textColor="#212121"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
 
         <!-- Subtítulo -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Sensores"
+            android:layout_marginTop="70dp"
+            android:text="DASHBOARDS"
             android:textAlignment="viewStart"
             android:textColor="#000000"
             android:textSize="16sp"
@@ -62,128 +72,137 @@
             android:layout_marginTop="4dp"
             android:background="#212121" />
 
-        <!-- Indicadores de sensores -->
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:alignmentMode="alignMargins"
+            android:background="@drawable/login_style"
             android:columnCount="3"
             android:rowCount="2"
-            android:alignmentMode="alignMargins"
             android:useDefaultMargins="true">
-
             <!-- Sensor 1 -->
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/dashTemperatura"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-                    android:background="@android:color/transparent"
-                    />
+                    android:background="@android:color/transparent" />
+
                 <TextView
-                    android:textColor="@color/black"
-                    android:text="Temperatura\nAmbiente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Temperatura\nAmbiente"
                     android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Sensor 2 -->
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/dashHumedad"
                     android:layout_width="100dp"
                     android:layout_height="100dp" />
+
                 <TextView
-                    android:textColor="@color/black"
-                    android:text="Humedad\nAmbiente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Humedad\nAmbiente"
                     android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Sensor 3 -->
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/dashGas"
                     android:layout_width="100dp"
                     android:layout_height="100dp" />
+
                 <TextView
-                    android:textColor="@color/black"
-                    android:text="Concentración\nde Gas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Concentración\nde Gas"
                     android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Sensor 4 -->
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/dashTemperaturaSuelo"
                     android:layout_width="100dp"
                     android:layout_height="100dp" />
+
                 <TextView
-                    android:textColor="@color/black"
-                    android:text="Temperatura\nSuelo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Temperatura\nSuelo"
                     android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <!-- Sensor 5 -->
             <LinearLayout
-                android:orientation="vertical"
-                android:gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/dashHumedadSuelo"
                     android:layout_width="100dp"
                     android:layout_height="100dp" />
+
                 <TextView
-                    android:textColor="@color/black"
-                    android:text="Humedad\nSuelo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Humedad\nSuelo"
                     android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:layout_marginTop="4dp" />
+                    android:textColor="@color/black"
+                    android:textSize="12sp" />
             </LinearLayout>
+
         </GridLayout>
 
         <!-- Sección gráfico histórico -->
         <TextView
-            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:text="Gráfico Histórico"
-            android:textStyle="bold"
+            android:textColor="@color/black"
             android:textSize="16sp"
-            android:layout_marginTop="24dp" />
+            android:textStyle="bold" />
 
         <!-- Línea debajo del título del gráfico -->
         <View
@@ -197,13 +216,16 @@
             android:id="@+id/dashHistorico"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:background="@drawable/login_style" />
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chartGases"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_marginTop="24dp" />
+            android:layout_marginTop="24dp"
+            android:background="@drawable/login_style" />
 
     </LinearLayout>
 </ScrollView>
+</RelativeLayout>
