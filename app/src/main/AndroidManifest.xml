@@ -17,6 +17,9 @@
         android:theme="@style/Theme.ProyectoMovil"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".MaterialDetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".MaterialsActivity"
             android:exported="false" />
         <activity

@@ -16,10 +16,8 @@ public class Materials {
     private String aptitude;
     private String typeCategory;
 
-    // 1) Constructor vacío requerido por parseList() y por librerías (Gson, etc.)
     public Materials() { }
 
-    // Constructor completo (opcional, sigue teniendo utilidad)
     public Materials(int id, String name, String image, String description,
                      String clasification, String aptitude, String typeCategory) {
         this.id = id;
@@ -53,7 +51,6 @@ public class Materials {
     public String getTypeCategory() { return typeCategory; }
     public void setTypeCategory(String typeCategory) { this.typeCategory = typeCategory; }
 
-    // 2) Parser que acepta array directo o { data: [...] }
     public static List<Materials> parseList(String body) throws JSONException {
         List<Materials> list = new ArrayList<>();
 
@@ -78,7 +75,7 @@ public class Materials {
             Materials m = new Materials();
             m.setId(o.optInt("id"));
             m.setName(o.optString("name"));
-            m.setImage(o.optString("image", null));            // puede venir null
+            m.setImage(o.optString("image", null));   // puede venir null
             m.setDescription(o.optString("description"));
             m.setClasification(o.optString("clasification"));
             m.setAptitude(o.optString("aptitude"));

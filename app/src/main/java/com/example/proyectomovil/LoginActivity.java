@@ -38,13 +38,15 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
 
         btnLogin = findViewById(R.id.btnLogin);
-        btnRegister = findViewById(R.id.btnRegister);
+//        btnRegister = findViewById(R.id.btnRegister);
 
         btnLogin.setOnClickListener(v -> login());
-        btnRegister.setOnClickListener(v -> {
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
-        });
+
+//        btnRegister.setOnClickListener(v -> {
+//            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+//            startActivity(intent);
+//        });
+
         client = new OkHttpClient();
     }
 
@@ -67,8 +69,8 @@ public class LoginActivity extends AppCompatActivity {
                 .add("password", password)
                 .build();
 
-        //URL de la ruta real a tu archivo PHP
-        String url = MainActivity.Constants.BASE_URL+"login"; // O tu IP real en red local
+
+        String url = MainActivity.Constants.BASE_URL+"login";
 
         Request request = new Request.Builder()
                 .url(url)

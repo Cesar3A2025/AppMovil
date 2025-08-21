@@ -50,7 +50,7 @@ public class MaterialsActivity extends AppCompatActivity {
     private final List<Materials> fullList = new ArrayList<>();
     private final List<Materials> filteredList = new ArrayList<>();
 
-    private MaterialsAdapter adapter; // Debes tener un Adapter que reciba lista + baseUrlImagenes
+    private MaterialsAdapter adapter;
     private final OkHttpClient client = new OkHttpClient();
 
     @Override
@@ -77,7 +77,7 @@ public class MaterialsActivity extends AppCompatActivity {
         adapter = new MaterialsAdapter(this, filteredList, BASE_IMAGES);
         rv.setAdapter(adapter);
 
-        // Spinners (valores por defecto usados en tu BD)
+        // Spinners (valores por defecto usados de BD)
         setupSpinners();
 
         // Search

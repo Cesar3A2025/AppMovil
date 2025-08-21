@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Fondo como imagen escalada correctamente -->
+    <!-- Fondo como imagen  -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,15 +66,16 @@
             android:backgroundTint="#000000"
             android:textColor="#FFFFFF"
             android:layout_marginBottom="8dp" />
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Registrarse"
-            android:textStyle="bold"
-            android:backgroundTint="#000000"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
+
+<!--            <Button-->
+<!--            android:id="@+id/btnRegister"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Registrarse"-->
+<!--            android:textStyle="bold"-->
+<!--            android:backgroundTint="#000000"-->
+<!--            android:textColor="#FFFFFF"-->
+<!--            android:layout_marginBottom="8dp" />-->
 
         <!-- Olvidé contraseña -->
         <TextView
@@ -87,5 +88,28 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="8dp" />
     </LinearLayout>
-</RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/LoggoBox"
+            android:layout_height="180dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:src="@drawable/compost_logo"
+                android:padding="100dp"
+                />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
 </FrameLayout>

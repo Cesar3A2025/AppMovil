@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class Constants {
-        public static final String BASE_URL = "http://192.168.0.4/composta_esp33/public/api/";
+        public static final String BASE_URL = "http://192.168.0.72/composta_esp33/public/api/";
     }
 
     @Override

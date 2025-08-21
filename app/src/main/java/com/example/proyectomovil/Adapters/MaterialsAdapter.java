@@ -1,6 +1,7 @@
 package com.example.proyectomovil.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide; // <-- IMPORTANTE
+import com.bumptech.glide.Glide;
+import com.example.proyectomovil.MaterialDetailActivity;
 import com.example.proyectomovil.Models.Materials;
 import com.example.proyectomovil.R;
 import com.google.android.material.chip.Chip;
@@ -50,11 +52,20 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialsAdapter.View
                 ? (path.startsWith("http") ? path : concatUrl(baseImagesUrl, path))
                 : null;
 
-        Glide.with(holder.itemView.getContext()) // <-- usa este contexto
+        Glide.with(holder.itemView.getContext())
                 .load(url)
                 .placeholder(R.drawable.home)
                 .error(R.drawable.home)
                 .into(holder.img);
+
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, MaterialDetailActivity.class);
+            intent.putExtra("id", m.getId());
+            intent.putExtra("name", m.getName());
+            intent.putExtra("clasification", m.getClasification());
+            intent.putExtra("aptitude", m.getAptitude());
+            context.startActivity(intent);
+        });
     }
 
     @Override
