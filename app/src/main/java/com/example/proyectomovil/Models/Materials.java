@@ -56,16 +56,13 @@ public class Materials {
 
         JSONArray arr;
         try {
-            // Intentar como objeto con "data"
             JSONObject obj = new JSONObject(body);
             if (obj.has("data")) {
                 arr = obj.getJSONArray("data");
             } else {
-                // si no tiene "data", intentar como array directo
                 arr = new JSONArray(body);
             }
         } catch (JSONException e) {
-            // No era objeto, intentar como array plano
             arr = new JSONArray(body);
         }
 
@@ -75,11 +72,11 @@ public class Materials {
             Materials m = new Materials();
             m.setId(o.optInt("id"));
             m.setName(o.optString("name"));
-            m.setImage(o.optString("image", null));   // puede venir null
+            m.setImage(o.optString("image", null));
             m.setDescription(o.optString("description"));
             m.setClasification(o.optString("clasification"));
             m.setAptitude(o.optString("aptitude"));
-            m.setTypeCategory(o.optString("type_category"));   // mapea snake_case -> camelCase
+            m.setTypeCategory(o.optString("type_category"));
 
             list.add(m);
         }

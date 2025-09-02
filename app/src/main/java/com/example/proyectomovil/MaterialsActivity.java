@@ -39,14 +39,10 @@ public class MaterialsActivity extends AppCompatActivity {
 
     private static final String BASE_API = "http://10.0.2.2/composta_esp33/public/api/materials";
     private static final String BASE_IMAGES = "http://10.0.2.2/composta_esp33/public/";
-
-    // ========================= UI =========================
     private RecyclerView rv;
     private SwipeRefreshLayout swipe;
     private SearchView searchView;
     private Spinner spnClasif, spnAptitud, spnCategoria;
-
-    // ========================= DATA =========================
     private final List<Materials> fullList = new ArrayList<>();
     private final List<Materials> filteredList = new ArrayList<>();
 
@@ -76,10 +72,8 @@ public class MaterialsActivity extends AppCompatActivity {
         rv.setLayoutManager(new LinearLayoutManager(this));
         adapter = new MaterialsAdapter(this, filteredList, BASE_IMAGES);
         rv.setAdapter(adapter);
-
         // Spinners (valores por defecto usados de BD)
         setupSpinners();
-
         // Search
         setupSearch();
 

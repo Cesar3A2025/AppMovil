@@ -2,7 +2,7 @@ package com.example.proyectomovil;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public class Constants {
-        public static final String BASE_URL = "http://192.168.0.72/composta_esp33/public/api/";
+        public static final String BASE_URL = "http://192.168.0.69/composta_esp33/public/api/";
     }
 
     @Override
@@ -177,34 +177,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPieChart(PieChart chart, float value, int ringColor, float limiteMax, String modoCritico) {
-        chart.setUsePercentValues(true);
+        float v = Math.max(0f, Math.min(100f, value));
+
+        // Estilo del donut
+        chart.setUsePercentValues(false);
         chart.getDescription().setEnabled(false);
         chart.setDrawHoleEnabled(true);
-        chart.setHoleRadius(80f);
-        chart.setTransparentCircleRadius(0f);
         chart.setHoleColor(Color.TRANSPARENT);
+        chart.setHoleRadius(78f);
+        chart.setTransparentCircleRadius(0f);
+        chart.setDrawRoundedSlices(true);
+
+        // Nada de textos/labels/leyenda
+        chart.setDrawCenterText(false);
         chart.setDrawEntryLabels(false);
         chart.getLegend().setEnabled(false);
 
-        int centerColor = modoCritico.equals("mayor") && value > limiteMax
-                ? Color.parseColor("#F44336") : Color.parseColor("#4CAF50");
-
-        chart.setCenterText((int) value + "%");
-        chart.setCenterTextSize(16f);
-        chart.setCenterTextColor(centerColor);
-        chart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
+        // Sin interacción/animación por toque
+        chart.setRotationEnabled(false);
+        chart.setTouchEnabled(false);
+        chart.setHighlightPerTapEnabled(false);
 
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(value, ""));
-        entries.add(new PieEntry(100f - value, ""));
+        entries.add(new PieEntry(v));
+        entries.add(new PieEntry(100f - v));
 
         PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(ringColor, Color.LTGRAY);
+        dataSet.setColors(ringColor, Color.parseColor("#ECECEC")); // color del aro + track gris
+        dataSet.setSliceSpace(2f);
+        dataSet.setSelectionShift(0f);
         dataSet.setDrawValues(false);
 
-        chart.setData(new PieData(dataSet));
+        PieData data = new PieData(dataSet);
+        chart.setData(data);
         chart.invalidate();
     }
+
 
     private void setupGasChart(PieChart chart, float nh3, float co2, float co, float benzene, float alcohol, float smoke) {
         List<PieEntry> entries = new ArrayList<>();
