@@ -1,4 +1,4 @@
-package com.example.proyectomovil;
+package com.example.proyectomovil.ui.materials;
 
 import android.os.Bundle;
 
@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.proyectomovil.Adapters.MaterialsAdapter;
-import com.example.proyectomovil.Models.Materials;
+import com.example.proyectomovil.domain.models.Materials;
+import com.example.proyectomovil.R;
 
 import org.json.JSONException;
 

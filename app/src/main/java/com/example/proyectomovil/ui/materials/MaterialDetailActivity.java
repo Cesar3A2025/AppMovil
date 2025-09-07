@@ -1,4 +1,4 @@
-package com.example.proyectomovil;
+package com.example.proyectomovil.ui.materials;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.proyectomovil.R;
 
 public class MaterialDetailActivity extends AppCompatActivity {
 

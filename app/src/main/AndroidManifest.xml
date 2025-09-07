@@ -17,22 +17,19 @@
         android:theme="@style/Theme.ProyectoMovil"
         android:usesCleartextTraffic="true">
         <activity
-            android:name=".MaterialDetailActivity"
+            android:name=".ui.materials.MaterialDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".MaterialsActivity"
+            android:name=".ui.materials.MaterialsActivity"
             android:exported="false" />
         <activity
             android:name=".Reports"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".ui.user.EditUser"
             android:exported="false" />
         <activity
-            android:name=".EditUser"
-            android:exported="false" />
-        <activity
-            android:name=".LoginActivity"
+            android:name=".ui.login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.main.MainActivity"
             android:exported="false" />
     </application>
 

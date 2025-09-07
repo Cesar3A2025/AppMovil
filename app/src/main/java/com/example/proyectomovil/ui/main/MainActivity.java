@@ -1,4 +1,4 @@
-package com.example.proyectomovil;
+package com.example.proyectomovil.ui.main;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -14,6 +14,10 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 
+import com.example.proyectomovil.ui.user.EditUser;
+import com.example.proyectomovil.ui.materials.MaterialsActivity;
+import com.example.proyectomovil.R;
+import com.example.proyectomovil.Reports;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 
@@ -33,16 +37,25 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
+import okhttp3.HttpUrl;
 import okhttp3.Request;
 import okhttp3.Response;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
+
+// Usa cliente y rutas centralizadas
+import com.example.proyectomovil.data.api.ApiClient;
+import com.example.proyectomovil.data.api.ApiRoutes;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -99,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
-            }else if (id == R.id.nav_materials) {
+            } else if (id == R.id.nav_materials) {
                 Toast.makeText(this, "Materials", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(this, MaterialsActivity.class);
                 startActivity(intent);
@@ -111,51 +124,79 @@ public class MainActivity extends AppCompatActivity {
         fetchHistoricalData(userId, dashHistorico);
     }
 
-    public class Constants {
-        public static final String BASE_URL = "http://192.168.0.69/composta_esp33/public/api/";
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (updateTask != null) handler.removeCallbacks(updateTask);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int userId = getIntent().getIntExtra("USER_ID", -1);
+        if (userId != -1) {
+            if (updateTask == null) {
+                updateTask = () -> {
+                    fetchSensorData(userId);
+                    fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
+                    handler.postDelayed(updateTask, 2000); //cada 2s
+                };
+            }
+            handler.post(updateTask);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(updateTask);
+        if (updateTask != null) handler.removeCallbacks(updateTask);
     }
 
     private void fetchSensorData(int userId) {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = ApiClient.get();
 
-        String url = Constants.BASE_URL+"get_last_reading?idUser=" + userId;
+        // /readings/latest + idUser
+        HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_LATEST)
+                .newBuilder()
+                .addQueryParameter("idUser", String.valueOf(userId))
+                .build();
 
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().url(url).get().build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error de red", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error de red: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String resp = response.body().string();
+                String resp = response.body() != null ? response.body().string() : "";
+
+                if (!response.isSuccessful()) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "HTTP " + response.code() + ": " + preview(resp), Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
                 try {
                     JSONObject json = new JSONObject(resp);
                     if (json.getBoolean("success")) {
                         JSONObject data = json.getJSONObject("data");
 
-                        float temperatura = (float) data.getDouble("temperature");
-                        float humedad = (float) data.getDouble("humidity");
-                        float tempSuelo = (float) data.getDouble("ds18b20_temp");
-                        float humedadSuelo = (float) data.getDouble("soil_moisture");
-                        float gas = (float) data.getDouble("mq135");
+                        float temperatura = (float) safeDouble(data, "temperature");
+                        float humedad = (float) safeDouble(data, "humidity");
+                        float tempSuelo = (float) safeDouble(data, "ds18b20_temp");
+                        float humedadSuelo = (float) safeDouble(data, "soil_moisture");
+                        float gas = (float) safeDouble(data, "mq135");
 
                         // Datos para gráfico de gases
-                        float nh3 = (float) data.getDouble("ammonia");
-                        float co2 = (float) data.getDouble("co2");
-                        float co = (float) data.getDouble("co");
-                        float benzene = (float) data.getDouble("benzene");
-                        float alcohol = (float) data.getDouble("alcohol");
-                        float smoke = (float) data.getDouble("smoke");
+                        float nh3 = (float) safeDouble(data, "ammonia");
+                        float co2 = (float) safeDouble(data, "co2");
+                        float co = (float) safeDouble(data, "co");
+                        float benzene = (float) safeDouble(data, "benzene");
+                        float alcohol = (float) safeDouble(data, "alcohol");
+                        float smoke = (float) safeDouble(data, "smoke");
 
                         runOnUiThread(() -> {
                             //Actilizacion de graficos circulares
@@ -168,9 +209,12 @@ public class MainActivity extends AppCompatActivity {
                             // Actualizacion de gráfico de gases
                             setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
                         });
+                    } else {
+                        String message = json.optString("message", "Respuesta inválida");
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear respuesta", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear respuesta: " + preview(resp), Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -254,20 +298,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void fetchHistoricalData(int userId, LineChart chart) {
-        OkHttpClient client = new OkHttpClient();
-        String url = Constants.BASE_URL+"get_historical_readings?idUser=" + userId;
+        OkHttpClient client = ApiClient.get();
 
-        Request request = new Request.Builder().url(url).build();
+        // Armamos rango de fechas para el histórico (últimos 7 días)
+        String to = formatDate(new Date());
+        String from = formatDate(daysAgo(7));
+
+        // /readings?from=YYYY-MM-DD&to=YYYY-MM-DD + idUser
+        HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_HIST)
+                .newBuilder()
+                .addQueryParameter("idUser", String.valueOf(userId))
+                .build();
+
+        Request request = new Request.Builder().url(url).get().build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al obtener histórico", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al obtener histórico: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
+                String json = response.body() != null ? response.body().string() : "";
+
+                if (!response.isSuccessful()) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "HTTP " + response.code() + ": " + preview(json), Toast.LENGTH_SHORT).show());
+                    return;
+                }
+
                 try {
                     JSONObject obj = new JSONObject(json);
                     if (obj.getBoolean("success")) {
@@ -283,17 +342,20 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < dataArray.length(); i++) {
                             JSONObject d = dataArray.getJSONObject(i);
                             labels.add(d.getString("datetime"));
-                            tempEntries.add(new Entry(i, (float) d.getDouble("temperature")));
-                            humidityEntries.add(new Entry(i, (float) d.getDouble("humidity")));
-                            dsEntries.add(new Entry(i, (float) d.getDouble("ds18b20_temp")));
-                            soilEntries.add(new Entry(i, (float) d.getDouble("soil_moisture")));
-                            gasEntries.add(new Entry(i, (float) d.getDouble("mq135")));
+                            tempEntries.add(new Entry(i, (float) safeDouble(d, "temperature")));
+                            humidityEntries.add(new Entry(i, (float) safeDouble(d, "humidity")));
+                            dsEntries.add(new Entry(i, (float) safeDouble(d, "ds18b20_temp")));
+                            soilEntries.add(new Entry(i, (float) safeDouble(d, "soil_moisture")));
+                            gasEntries.add(new Entry(i, (float) safeDouble(d, "mq135")));
                         }
 
                         runOnUiThread(() -> updateLineChart(chart, labels, tempEntries, humidityEntries, dsEntries, soilEntries, gasEntries));
+                    } else {
+                        String msg = obj.optString("message", "Respuesta inválida");
+                        runOnUiThread(() -> Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear histórico", Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear histórico: " + preview(json), Toast.LENGTH_SHORT).show());
                 }
             }
         });
@@ -338,5 +400,37 @@ public class MainActivity extends AppCompatActivity {
         });
 
         chart.invalidate();
+    }
+
+    // -------- Helpers --------
+
+    private double safeDouble(JSONObject o, String key) {
+        try {
+            if (o.isNull(key)) return 0.0;
+            Object v = o.get(key);
+            if (v instanceof Number) return ((Number) v).doubleValue();
+            String s = String.valueOf(v).trim();
+            if (s.isEmpty()) return 0.0;
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
+    private String preview(String s) {
+        if (s == null) return "";
+        s = s.replace("\n", " ").replace("\r", " ");
+        return s.length() > 160 ? s.substring(0, 160) + "..." : s;
+    }
+
+    private String formatDate(Date date){
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(date);
+    }
+
+    private Date daysAgo(int days){
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_MONTH, -days);
+        return cal.getTime();
     }
 }

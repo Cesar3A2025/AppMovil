@@ -1,4 +1,4 @@
-package com.example.proyectomovil.Models;
+package com.example.proyectomovil.domain.models;
 
 import org.json.JSONArray;
 import org.json.JSONException;

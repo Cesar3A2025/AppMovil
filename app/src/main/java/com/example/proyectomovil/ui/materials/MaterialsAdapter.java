@@ -1,4 +1,4 @@
-package com.example.proyectomovil.Adapters;
+package com.example.proyectomovil.ui.materials;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.proyectomovil.MaterialDetailActivity;
-import com.example.proyectomovil.Models.Materials;
+import com.example.proyectomovil.domain.models.Materials;
 import com.example.proyectomovil.R;
 import com.google.android.material.chip.Chip;
 
