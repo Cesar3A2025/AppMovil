@@ -3,7 +3,8 @@ package com.example.proyectomovil.data.api;
 public final class ApiRoutes {
     private ApiRoutes(){}
 
-    // Cambia la IP/base si es necesario
+    // https://compos.alwaysdata.net/
+    // http://192.168.0.55/composta_esp33/public/
     public static final String BASE = "https://compos.alwaysdata.net/api";
 
     // Users (según UserController.php)

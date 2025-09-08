@@ -71,14 +71,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LineChart dashHistorico = findViewById(R.id.dashHistorico);
-        chartGases = findViewById(R.id.chartGases); //Inicializamos
+        chartGases = findViewById(R.id.chartGases);
 
         int userId = getIntent().getIntExtra("USER_ID", -1);
         if (userId != -1) {
             updateTask = () -> {
                 fetchSensorData(userId);
                 fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
-                handler.postDelayed(updateTask, 2000); //cada 2s
+                handler.postDelayed(updateTask, 5000); //cada 5s
             };
             handler.post(updateTask);
         }
