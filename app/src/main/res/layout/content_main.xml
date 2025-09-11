@@ -17,7 +17,7 @@
         android:elevation="4dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="40dp">
+        android:paddingBottom="4dp">
 
         <ImageView
             android:id="@+id/btn_menu"
@@ -34,10 +34,10 @@
         <TextView
             android:layout_width="280dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="1dp"
             android:layout_marginTop="20dp"
-            android:paddingLeft="75dp"
-            android:text="COMPOST"
+            android:paddingLeft="60dp"
+            android:text="DASHBOARD"
             android:textColor="#212121"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -56,249 +56,522 @@
         android:padding="24dp"
         >
 
-        <!-- Fila de 2 tarjetas -->
-        <LinearLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginTop="100dp">
+            android:layout_height="155dp"
+            android:layout_marginTop="100dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/white"
+            >
 
-
-
-            <GridLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:columnCount="4"
-                android:background="@drawable/login_style"
-                android:rowCount="1">
+                android:layout_height="match_parent"
+                android:padding="16dp">
 
-                <!-- Sensor 1 -->
-                <LinearLayout
-                    android:layout_width="100dp"
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline33"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    >
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Estado del Ambiente"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="Temperatura"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
+                    app:layout_constraintGuide_percent="0.30" />
 
-                    <TextView android:id="@+id/valTemp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="21dp"
-                        android:layout_marginLeft="25dp"
-                        android:text="90"
-                        android:textColor="@color/black"
-                        android:textSize="40sp" />
-                </LinearLayout>
-
-                <LinearLayout
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline66"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <com.github.mikephil.charting.charts.PieChart
-                            android:id="@+id/dashTemperatura"
-                            android:layout_marginTop="70dp"
-                            android:layout_width="75dp"
-                            android:layout_height="75dp"
-                            android:background="@android:color/transparent" />
-                        <ImageView
-                            android:id="@+id/iconTemperatura"
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="30dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/home"
-                            app:tint="#F85F6A" />
-                    </FrameLayout>
-                </LinearLayout>
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.50" />
 
-                <!-- Sensor 2 -->
-                <LinearLayout
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="45dp"
-                        android:text="Humedad"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-                    <TextView
-                        android:id="@+id/valHum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginLeft="25dp"
-                        android:text="17"
-                        android:textColor="@color/black"
-                        android:textSize="40dp" />
-                </LinearLayout>
-
-                <LinearLayout
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline99"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.75" />
 
-                </LinearLayout>
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/tvTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Estado del ambiente"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#E6E6E6"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitle"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <!-- Columna izquierda: Temperatura -->
+                <TextView
+                    android:id="@+id/labelTemp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Temperatura"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline33" />
+
+                <TextView
+                    android:id="@+id/valTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="22"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/labelTemp" />
+
+                <TextView
+                    android:id="@+id/valTempPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="°C"
+                    android:textSize="26sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintBaseline_toBaselineOf="@id/valTemp"
+                    app:layout_constraintStart_toEndOf="@id/valTemp" />
+
+                <!-- Gráfico de temperatura -->
                 <FrameLayout
+                    android:id="@+id/flTempRing"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:layout_constraintStart_toStartOf="@id/guideline33"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="25dp"
+                    >
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/dashTemperatura"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/iconTemperatura"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_thermostat" />
+                </FrameLayout>
+
+                <!-- Columna derecha: Humedad -->
+                <TextView
+                    android:id="@+id/labelHum"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Humedad"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:layout_constraintStart_toStartOf="@id/guideline66"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="14dp"
+                    />
+
+                <TextView
+                    android:id="@+id/valHum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_row="0"
-                    android:layout_column="3">
+                    android:text="37"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/labelHum"
+                    app:layout_constraintStart_toStartOf="@id/guideline66"
+                    />
+
+                <TextView
+                    android:id="@+id/valHumPercent"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="%"
+                    android:textSize="26sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintBaseline_toBaselineOf="@id/valHum"
+                    app:layout_constraintStart_toEndOf="@id/valHum" />
+
+                <!-- Gráfico de humedad -->
+                <FrameLayout
+                    android:id="@+id/flHumRing"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider"
+                    app:layout_constraintStart_toEndOf="@id/guideline99"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="25dp"
+                    >
 
                     <com.github.mikephil.charting.charts.PieChart
                         android:id="@+id/dashHumedad"
-                        android:layout_width="75dp"
-                        android:layout_height="75dp"
-                        android:layout_marginTop="70dp" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
                     <ImageView
                         android:id="@+id/iconHumedad"
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="30dp"
-                        android:src="@drawable/home"
-                        app:tint="#F85F6A" />
+                        android:src="@drawable/ic_water_drop" />
                 </FrameLayout>
-            </GridLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
 
 
-
-
-
-
-        </LinearLayout>
-
-
-        <GridLayout
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:alignmentMode="alignMargins"
-            android:background="@drawable/login_style"
-            android:columnCount="3"
-            android:rowCount="2"
-            android:useDefaultMargins="true">
+            android:layout_height="155dp"
+            android:layout_marginTop="15dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/white"
+            >
 
-            <!-- Sensor 3 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
 
-                <TextView
+                <!-- Guías para dividir en 3 columnas -->
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline111"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Estado del Suelo"
-                    android:textAlignment="center"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.30" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline222"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.50" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline333"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.75" />
+
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/tvTitle2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Estado del suelo"
+                    android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
 
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#E6E6E6"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitle2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <!-- Columna izquierda: Temperatura -->
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/labelTemp2"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Humedad"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="12sp" />
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/dashHumedadSuelo"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp" />
-
-            </LinearLayout>
-
-            <!-- Sensor 4 -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
                     android:text="Temperatura"
-                    android:textAlignment="center"
+                    android:textSize="14sp"
                     android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/guideline111" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/dashTemperaturaSuelo"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp" />
+                <TextView
+                    android:id="@+id/valTemp2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="10"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/labelTemp2" />
 
-            </LinearLayout>
+                <TextView
+                    android:id="@+id/valTempPercent2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="°C"
+                    android:textSize="26sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintBaseline_toBaselineOf="@id/valTemp2"
+                    app:layout_constraintStart_toEndOf="@id/valTemp2" />
 
-        </GridLayout>
+                <!-- Gráfico de temperatura -->
+                <FrameLayout
+                    android:id="@+id/flTempRing2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider2"
+                    app:layout_constraintStart_toStartOf="@id/guideline111"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="25dp"
+                    >
 
-        <GridLayout
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/dashHumedadSuelo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
+
+                    <ImageView
+                        android:id="@+id/iconTemperatura2"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_thermostat2" />
+                </FrameLayout>
+
+                <!-- Columna derecha: Humedad -->
+                <TextView
+                    android:id="@+id/labelHum2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Humedad"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintTop_toBottomOf="@id/divider2"
+                    app:layout_constraintStart_toStartOf="@id/guideline222"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_marginTop="14dp"
+                    />
+
+                <TextView
+                    android:id="@+id/valHum2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="47"
+                    android:textColor="@color/black"
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    app:layout_constraintTop_toBottomOf="@id/labelHum2"
+                    app:layout_constraintStart_toStartOf="@id/guideline222"
+                    />
+
+                <TextView
+                    android:id="@+id/valHumPercent2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="%"
+                    android:textSize="26sp"
+                    android:textColor="@color/black"
+                    app:layout_constraintBaseline_toBaselineOf="@id/valHum2"
+                    app:layout_constraintStart_toEndOf="@id/valHum2" />
+
+                <!-- Gráfico de humedad -->
+                <FrameLayout
+                    android:id="@+id/flHumRing2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider2"
+                    app:layout_constraintStart_toEndOf="@id/guideline333"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="25dp"
+                    >
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/dashTemperaturaSuelo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ImageView
+                        android:id="@+id/iconHumedad2"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_water_drop2" />
+                </FrameLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:alignmentMode="alignMargins"
-            android:background="@drawable/login_style"
-            android:columnCount="3"
-            android:rowCount="2"
-            android:useDefaultMargins="true">
+            android:layout_height="155dp"
+            android:layout_marginTop="15dp"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="@color/white"
+            >
 
-            <!-- Sensor 5 -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
 
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline112"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.30" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tvTitle3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Concentración de Gas"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="#E6E6E6"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintTop_toBottomOf="@id/tvTitle3"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <!-- Columna izquierda: Temperatura -->
+                <TextView
+                    android:id="@+id/labelTemp3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Partes Por Millon"
+                    android:textSize="14sp"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="12dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider3"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/valGas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Gases"
-                    android:textAlignment="center"
+                    android:text="10"
                     android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    android:textSize="40sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/labelTemp3" />
 
                 <TextView
+                    android:id="@+id/valTempPercent3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Concentración"
-                    android:textAlignment="center"
+                    android:text="PPM"
+                    android:textSize="26sp"
                     android:textColor="@color/black"
-                    android:textSize="12sp" />
+                    app:layout_constraintBaseline_toBaselineOf="@id/valGas"
+                    app:layout_constraintStart_toEndOf="@id/valGas" />
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/dashGas"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp" />
+                <!-- Gráfico de temperatura -->
+                <FrameLayout
+                    android:id="@+id/flTempRing3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    app:layout_constraintTop_toBottomOf="@id/divider3"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginTop="25dp"
+                    app:layout_constraintStart_toStartOf="@id/guideline112"
+                    >
 
-            </LinearLayout>
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/dashGas"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        />
 
-        </GridLayout>
+                    <ImageView
+                        android:id="@+id/iconTemperatura3"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_thermostat2" />
+                </FrameLayout>
+
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+<!--        <GridLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:alignmentMode="alignMargins"-->
+<!--            android:background="@drawable/login_style"-->
+<!--            android:columnCount="3"-->
+<!--            android:rowCount="2"-->
+<!--            android:useDefaultMargins="true">-->
+
+<!--            &lt;!&ndash; Sensor 5 &ndash;&gt;-->
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:text="Concentracion de Gas"-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="12sp" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="4dp"-->
+<!--                    android:text=""-->
+<!--                    android:textAlignment="center"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="12sp" />-->
+
+<!--                <com.github.mikephil.charting.charts.PieChart-->
+<!--                    android:id="@+id/dashGas"-->
+<!--                    android:layout_width="100dp"-->
+<!--                    android:layout_height="100dp" />-->
+
+<!--            </LinearLayout>-->
+
+<!--        </GridLayout>-->
 
 
         <!-- Sección gráfico histórico -->
@@ -313,12 +586,175 @@
 
 
         <!-- Gráfico de barras -->
-        <com.github.mikephil.charting.charts.LineChart
-            android:id="@+id/dashHistorico"
+
+        <!-- Requiere Material Components en tu theme -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardHistoric"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/login_style" />
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardUseCompatPadding="true"
+            app:strokeWidth="0dp"
+            app:cardBackgroundColor="@color/card_beige">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/tvTitleHistoric"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Gráfico Histórico"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="@color/text_primary" />
+
+                <!-- Cabecera: mes y flechas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingTop="8dp">
+
+                    <ImageView
+                        android:id="@+id/btnPrevDay"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_chevron_left" />
+
+                    <TextView
+                        android:id="@+id/tvMonth"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="Agosto 2025"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary"/>
+
+                    <ImageView
+                        android:id="@+id/btnNextDay"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:src="@drawable/ic_chevron_right" />
+                </LinearLayout>
+
+                <!-- Rango horario + chips de intervalo -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="space_between"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/ic_time"/>
+                        <TextView
+                            android:id="@+id/tvRange"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="08:00 – 09:00"
+                            android:layout_marginStart="6dp"
+                            android:textColor="@color/text_secondary"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.chip.ChipGroup
+                        android:id="@+id/chipGroupInterval"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:singleSelection="true"
+                        app:chipSpacingHorizontal="6dp">
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip1"
+                            style="@style/Widget.My.Chip.Filter"
+                            android:text="1 min." />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip2"
+                            style="@style/Widget.My.Chip.Filter"
+                            android:text="2 min." />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip5"
+                            style="@style/Widget.My.Chip.Filter"
+                            android:text="5 min." />
+
+                        <com.google.android.material.chip.Chip
+                            android:id="@+id/chip10"
+                            style="@style/Widget.My.Chip.Filter.Checked"
+                            android:text="10 min." />
+                    </com.google.android.material.chip.ChipGroup>
+                </LinearLayout>
+
+                <!-- El gráfico -->
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/dashHistorico"
+                    android:layout_width="match_parent"
+                    android:layout_height="320dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/transparent" />
+
+                <!-- Leyenda estilo “Ambiente | Suelo | Gas” -->
+                <LinearLayout
+                    android:id="@+id/legendCustom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="6dp"
+                    android:paddingBottom="4dp">
+
+                    <!-- Repite este bloque cambiando color/texto -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Ambiente"
+                        android:textColor="@color/text_secondary"
+                        android:drawablePadding="6dp"
+                        android:padding="4dp"
+                        android:drawableStart="@drawable/dot_blue"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Suelo"
+                        android:textColor="@color/text_secondary"
+                        android:drawablePadding="6dp"
+                        android:padding="4dp"
+                        android:drawableStart="@drawable/dot_yellow"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gas"
+                        android:textColor="@color/text_secondary"
+                        android:drawablePadding="6dp"
+                        android:padding="4dp"
+                        android:drawableStart="@drawable/dot_orange"/>
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+
+        <!--        <com.github.mikephil.charting.charts.LineChart-->
+<!--            android:id="@+id/dashHistorico"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="300dp"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:background="@drawable/login_style" />-->
 
         <com.github.mikephil.charting.charts.PieChart
             android:id="@+id/chartGases"

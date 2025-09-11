@@ -16,7 +16,7 @@ import com.example.proyectomovil.ui.main.MainActivity;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etUsername, etPassword;
-    private View btnLogin, progress; // progress = ProgressBar (en el layout)
+    private View btnLogin, progress; // ProgressBar
     private final UsersRepository usersRepo = new UsersRepository();
 
     @Override
@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         btnLogin   = findViewById(R.id.btnLogin);
-        progress   = findViewById(R.id.progressBar); // agrega un ProgressBar con este id si aún no existe
+        progress   = findViewById(R.id.progressBar);
 
         btnLogin.setOnClickListener(v -> tryLogin());
     }
@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // Si quieres, guarda en SharedPreferences aquí (id, name, email, etc.)
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
             intent.putExtra("USER_ID",    u.id);
             intent.putExtra("USER_NAME",  u.name);

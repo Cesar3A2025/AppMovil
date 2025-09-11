@@ -19,4 +19,22 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:includeFontPadding">false</item>
     </style>
+
+    <style name="Widget.My.Chip.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="chipStrokeColor">@color/text_secondary</item>
+        <item name="chipBackgroundColor">@android:color/transparent</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="shapeAppearanceOverlay">@style/Shape.Chip.Pill</item>
+    </style>
+
+    <style name="Widget.My.Chip.Filter.Checked" parent="Widget.My.Chip.Filter">
+        <item name="chipBackgroundColor">@color/text_primary</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Shape.Chip.Pill" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

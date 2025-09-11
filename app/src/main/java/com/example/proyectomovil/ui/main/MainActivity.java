@@ -1,7 +1,13 @@
 package com.example.proyectomovil.ui.main;
 
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,52 +16,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.GravityCompat;
-
-import com.example.proyectomovil.ui.user.EditUser;
-import com.example.proyectomovil.ui.materials.MaterialsActivity;
 import com.example.proyectomovil.R;
 import com.example.proyectomovil.Reports;
+import com.example.proyectomovil.data.api.ApiClient;
+import com.example.proyectomovil.data.api.ApiRoutes;
+import com.example.proyectomovil.ui.materials.MaterialsActivity;
+import com.example.proyectomovil.ui.user.EditUser;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
-
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieData;
-
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.components.XAxis;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.OkHttpClient;
 import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-import com.google.android.material.navigation.NavigationView;
-
-// Usa cliente y rutas centralizadas
-import com.example.proyectomovil.data.api.ApiClient;
-import com.example.proyectomovil.data.api.ApiRoutes;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             updateTask = () -> {
                 fetchSensorData(userId);
                 fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
-                handler.postDelayed(updateTask, 5000); //cada 5s
+                handler.postDelayed(updateTask, 5000); // cada 5s
             };
             handler.post(updateTask);
         }
@@ -87,11 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         ImageView btnMenu = findViewById(R.id.btn_menu);
-
         btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
-
         View headerView = navigationView.getHeaderView(0);
         ((TextView) headerView.findViewById(R.id.tvHeaderName)).setText(getIntent().getStringExtra("USER_NAME"));
         ((TextView) headerView.findViewById(R.id.tvHeaderEmail)).setText(getIntent().getStringExtra("USER_EMAIL"));
@@ -113,9 +108,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_settings) {
                 Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_materials) {
-                Toast.makeText(this, "Materials", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, MaterialsActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(this, MaterialsActivity.class));
             }
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
@@ -139,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 updateTask = () -> {
                     fetchSensorData(userId);
                     fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
-                    handler.postDelayed(updateTask, 2000); //cada 2s
+                    handler.postDelayed(updateTask, 2000); // cada 2s
                 };
             }
             handler.post(updateTask);
@@ -152,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
         if (updateTask != null) handler.removeCallbacks(updateTask);
     }
 
-    private void fetchSensorData(int userId) {
+    // -------- Networking --------
 
+    private void fetchSensorData(int userId) {
         OkHttpClient client = ApiClient.get();
 
-        // /readings/latest + idUser
         HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_LATEST)
                 .newBuilder()
                 .addQueryParameter("idUser", String.valueOf(userId))
@@ -167,15 +160,18 @@ public class MainActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error de red: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this, "Error de red: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String resp = response.body() != null ? response.body().string() : "";
-
                 if (!response.isSuccessful()) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "HTTP " + response.code() + ": " + preview(resp), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() ->
+                            Toast.makeText(MainActivity.this, "HTTP " + response.code() + ": " + preview(resp), Toast.LENGTH_SHORT).show()
+                    );
                     return;
                 }
 
@@ -184,29 +180,48 @@ public class MainActivity extends AppCompatActivity {
                     if (json.getBoolean("success")) {
                         JSONObject data = json.getJSONObject("data");
 
-                        float temperatura = (float) safeDouble(data, "temperature");
-                        float humedad = (float) safeDouble(data, "humidity");
-                        float tempSuelo = (float) safeDouble(data, "ds18b20_temp");
+                        float temperatura  = (float) safeDouble(data, "temperature");
+                        float humedad      = (float) safeDouble(data, "humidity");
+                        float tempSuelo    = (float) safeDouble(data, "ds18b20_temp");
                         float humedadSuelo = (float) safeDouble(data, "soil_moisture");
-                        float gas = (float) safeDouble(data, "mq135");
+                        float gas          = (float) safeDouble(data, "mq135");
 
-                        // Datos para gráfico de gases
-                        float nh3 = (float) safeDouble(data, "ammonia");
-                        float co2 = (float) safeDouble(data, "co2");
-                        float co = (float) safeDouble(data, "co");
+                        // gases
+                        float nh3     = (float) safeDouble(data, "ammonia");
+                        float co2     = (float) safeDouble(data, "co2");
+                        float co      = (float) safeDouble(data, "co");
                         float benzene = (float) safeDouble(data, "benzene");
                         float alcohol = (float) safeDouble(data, "alcohol");
-                        float smoke = (float) safeDouble(data, "smoke");
+                        float smoke   = (float) safeDouble(data, "smoke");
 
                         runOnUiThread(() -> {
-                            //Actilizacion de graficos circulares
-                            setupPieChart(findViewById(R.id.dashTemperatura), temperatura, Color.parseColor("#7FE1AD"), 35f, "mayor");
-                            setupPieChart(findViewById(R.id.dashHumedad), humedad, Color.parseColor("#F85F6A"), 40f, "mayor");
-                            setupPieChart(findViewById(R.id.dashGas), gas, Color.parseColor("#5F6AF8"), 15f, "mayor");
-                            setupPieChart(findViewById(R.id.dashTemperaturaSuelo), tempSuelo, Color.parseColor("#2F073B"), 15f, "menor");
-                            setupPieChart(findViewById(R.id.dashHumedadSuelo), humedadSuelo, Color.parseColor("#C238EB"), 30f, "menor");
+                            // Colores
+                            int rojo  = Color.parseColor("#E84D4D");   // T°
+                            int morado= Color.parseColor("#7B43C5");   // Humedad
+                            int amarillo  = Color.parseColor("#F69621");   // T°
+                            int naranja= Color.parseColor("#FCC813");   // Humedad
+                            int track = Color.parseColor("#F1F2F6");   // pista
 
-                            // Actualizacion de gráfico de gases
+                            // Vincula anillo + número (con animación)
+                            bindRing(findViewById(R.id.dashTemperatura),
+                                    (TextView) findViewById(R.id.valTemp),
+                                    temperatura, rojo, track);
+
+                            bindRing(findViewById(R.id.dashHumedad),
+                                    (TextView) findViewById(R.id.valHum),
+                                    humedad, morado, track);
+
+                            bindRing(findViewById(R.id.dashTemperaturaSuelo),
+                                    (TextView) findViewById(R.id.valTemp2),
+                                    tempSuelo, amarillo, track);
+
+                            bindRing(findViewById(R.id.dashHumedadSuelo),
+                                    (TextView) findViewById(R.id.valHum2),
+                                    humedadSuelo, naranja, track);
+
+                            // Otros diales que ya usabas
+                            setupPieChart(findViewById(R.id.dashGas),               gas,        Color.parseColor("#5F6AF8"), 15f, "mayor");
+                            // Gráfico composiciones de gases
                             setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
                         });
                     } else {
@@ -214,97 +229,21 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear respuesta: " + preview(resp), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() ->
+                            Toast.makeText(MainActivity.this, "Error al parsear respuesta: " + preview(resp), Toast.LENGTH_SHORT).show()
+                    );
                 }
             }
         });
     }
 
-    private void setupPieChart(PieChart chart, float value, int ringColor, float limiteMax, String modoCritico) {
-        float v = Math.max(0f, Math.min(100f, value));
-
-        // Estilo del donut
-        chart.setUsePercentValues(false);
-        chart.getDescription().setEnabled(false);
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleColor(Color.TRANSPARENT);
-        chart.setHoleRadius(78f);
-        chart.setTransparentCircleRadius(0f);
-        chart.setDrawRoundedSlices(true);
-
-        // Nada de textos/labels/leyenda
-        chart.setDrawCenterText(false);
-        chart.setDrawEntryLabels(false);
-        chart.getLegend().setEnabled(false);
-
-        // Sin interacción/animación por toque
-        chart.setRotationEnabled(false);
-        chart.setTouchEnabled(false);
-        chart.setHighlightPerTapEnabled(false);
-
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(v));
-        entries.add(new PieEntry(100f - v));
-
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(ringColor, Color.parseColor("#ECECEC")); // color del aro + track gris
-        dataSet.setSliceSpace(2f);
-        dataSet.setSelectionShift(0f);
-        dataSet.setDrawValues(false);
-
-        PieData data = new PieData(dataSet);
-        chart.setData(data);
-        chart.invalidate();
-    }
-
-
-    private void setupGasChart(PieChart chart, float nh3, float co2, float co, float benzene, float alcohol, float smoke) {
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(nh3, "NH₃"));
-        entries.add(new PieEntry(co2, "CO₂"));
-        entries.add(new PieEntry(co, "CO"));
-        entries.add(new PieEntry(benzene, "Benceno"));
-        entries.add(new PieEntry(alcohol, "Alcohol"));
-        entries.add(new PieEntry(smoke, "Humo"));
-
-        PieDataSet dataSet = new PieDataSet(entries, "Composición Estimada de Gases");
-        dataSet.setColors(new int[]{
-                Color.rgb(76, 175, 80), Color.rgb(255, 152, 0),
-                Color.RED, Color.BLUE, Color.MAGENTA, Color.DKGRAY
-        });
-
-        dataSet.setSliceSpace(2f);
-        dataSet.setValueTextSize(12f);
-        dataSet.setValueTextColor(Color.BLACK);
-
-        chart.setData(new PieData(dataSet));
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleRadius(50f);
-        chart.setTransparentCircleRadius(55f);
-        chart.setEntryLabelColor(Color.BLACK);
-        chart.setEntryLabelTextSize(12f);
-        chart.getDescription().setEnabled(false);
-        chart.setCenterText("Composición de Gases");
-        chart.setCenterTextSize(14f);
-        chart.getLegend().setEnabled(true);
-        chart.invalidate();
-    }
-
-    private void setupLineChart(LineChart chart) {
-        chart.getDescription().setEnabled(false);
-        chart.setTouchEnabled(true);
-        chart.setPinchZoom(true);
-        chart.getAxisRight().setEnabled(false);
-    }
-
     private void fetchHistoricalData(int userId, LineChart chart) {
         OkHttpClient client = ApiClient.get();
 
-        // Armamos rango de fechas para el histórico (últimos 7 días)
+        // Rango últimos 7 días (si tu API lo usa)
         String to = formatDate(new Date());
         String from = formatDate(daysAgo(7));
 
-        // /readings?from=YYYY-MM-DD&to=YYYY-MM-DD + idUser
         HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_HIST)
                 .newBuilder()
                 .addQueryParameter("idUser", String.valueOf(userId))
@@ -321,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body() != null ? response.body().string() : "";
-
                 if (!response.isSuccessful()) {
                     runOnUiThread(() -> Toast.makeText(MainActivity.this, "HTTP " + response.code() + ": " + preview(json), Toast.LENGTH_SHORT).show());
                     return;
@@ -361,6 +299,45 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void setupLineChart(LineChart chart) {
+        chart.setViewPortOffsets(32f, 16f, 40f, 48f);
+        chart.getDescription().setEnabled(false);
+        chart.setTouchEnabled(true);
+        chart.setPinchZoom(true);
+        chart.setDoubleTapToZoomEnabled(false);
+        chart.setScaleYEnabled(false);
+        chart.setNoDataText("Sin datos");
+
+        // Grid y ejes
+        chart.getAxisRight().setEnabled(true);
+        chart.getAxisLeft().setAxisMinimum(0f);
+        chart.getAxisLeft().setAxisMaximum(100f);
+        chart.getAxisLeft().setTextColor(Color.parseColor("#6C6C6C"));
+        chart.getAxisLeft().setGridColor(Color.parseColor("#EAEAEA"));
+        chart.getAxisLeft().setGranularity(20f);
+
+        chart.getAxisRight().setAxisMinimum(0f);
+        chart.getAxisRight().setAxisMaximum(1000f);
+        chart.getAxisRight().setTextColor(Color.parseColor("#6C6C6C"));
+        chart.getAxisRight().setGridColor(Color.parseColor("#EAEAEA"));
+        chart.getAxisRight().setGranularity(200f);
+
+        XAxis x = chart.getXAxis();
+        x.setPosition(XAxis.XAxisPosition.BOTTOM);
+        x.setTextColor(Color.parseColor("#6C6C6C"));
+        x.setDrawGridLines(false);
+        x.setGranularity(1f);
+        x.setLabelRotationAngle(-30f);
+
+        chart.getLegend().setEnabled(false); // usas leyenda custom
+        chart.setExtraBottomOffset(8f);
+
+        // Marcador (tooltip)
+        MyMarkerView mv = new MyMarkerView(this, R.layout.marker_basic);
+        mv.setChartView(chart);
+        chart.setMarker(mv);
+    }
+
     private void updateLineChart(LineChart chart, List<String> labels,
                                  List<Entry> temp, List<Entry> hum, List<Entry> ds,
                                  List<Entry> soil, List<Entry> gas) {
@@ -384,7 +361,6 @@ public class MainActivity extends AppCompatActivity {
         chart.setData(lineData);
         chart.getAxisRight().setEnabled(false);
 
-        // Eje X con fechas
         XAxis xAxis = chart.getXAxis();
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -392,8 +368,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setLabelRotationAngle(-45);
         xAxis.setLabelCount(labels.size(), true);
         xAxis.setValueFormatter(new ValueFormatter() {
-            @Override
-            public String getFormattedValue(float value) {
+            @Override public String getFormattedValue(float value) {
                 int index = (int) value;
                 return (index >= 0 && index < labels.size()) ? labels.get(index) : "";
             }
@@ -402,7 +377,69 @@ public class MainActivity extends AppCompatActivity {
         chart.invalidate();
     }
 
-    // -------- Helpers --------
+    private void setupPieChart(PieChart chart, float value, int ringColor, float limiteMax, String modoCritico) {
+        float v = Math.max(0f, Math.min(100f, value));
+
+        chart.setUsePercentValues(false);
+        chart.getDescription().setEnabled(false);
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(Color.TRANSPARENT);
+        chart.setHoleRadius(78f);
+        chart.setTransparentCircleRadius(0f);
+        chart.setDrawRoundedSlices(true);
+
+        chart.setDrawCenterText(false);
+        chart.setDrawEntryLabels(false);
+        chart.getLegend().setEnabled(false);
+
+        chart.setRotationEnabled(false);
+        chart.setTouchEnabled(false);
+        chart.setHighlightPerTapEnabled(false);
+
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(v));
+        entries.add(new PieEntry(100f - v));
+
+        PieDataSet dataSet = new PieDataSet(entries, "");
+        dataSet.setColors(ringColor, Color.parseColor("#ECECEC"));
+        dataSet.setSliceSpace(2f);
+        dataSet.setSelectionShift(0f);
+        dataSet.setDrawValues(false);
+
+        chart.setData(new PieData(dataSet));
+        chart.invalidate();
+    }
+
+    private void setupGasChart(PieChart chart, float nh3, float co2, float co, float benzene, float alcohol, float smoke) {
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(nh3, "NH₃"));
+        entries.add(new PieEntry(co2, "CO₂"));
+        entries.add(new PieEntry(co, "CO"));
+        entries.add(new PieEntry(benzene, "Benceno"));
+        entries.add(new PieEntry(alcohol, "Alcohol"));
+        entries.add(new PieEntry(smoke, "Humo"));
+
+        PieDataSet dataSet = new PieDataSet(entries, "Composición Estimada de Gases");
+        dataSet.setColors(new int[]{
+                Color.rgb(76, 175, 80), Color.rgb(255, 152, 0),
+                Color.RED, Color.BLUE, Color.MAGENTA, Color.DKGRAY
+        });
+        dataSet.setSliceSpace(2f);
+        dataSet.setValueTextSize(12f);
+        dataSet.setValueTextColor(Color.BLACK);
+
+        chart.setData(new PieData(dataSet));
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleRadius(50f);
+        chart.setTransparentCircleRadius(55f);
+        chart.setEntryLabelColor(Color.BLACK);
+        chart.setEntryLabelTextSize(12f);
+        chart.getDescription().setEnabled(false);
+        chart.setCenterText("Composición de Gases");
+        chart.setCenterTextSize(14f);
+        chart.getLegend().setEnabled(true);
+        chart.invalidate();
+    }
 
     private double safeDouble(JSONObject o, String key) {
         try {
@@ -432,5 +469,68 @@ public class MainActivity extends AppCompatActivity {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_MONTH, -days);
         return cal.getTime();
+    }
+
+
+    private void setupRing(PieChart chart, float percent, int ringColor, int trackColor) {
+        float value = Math.max(0f, Math.min(100f, percent));
+
+        chart.setUsePercentValues(false);
+        chart.getDescription().setEnabled(false);
+        chart.getLegend().setEnabled(false);
+        chart.setDrawEntryLabels(false);
+
+        chart.setDrawHoleEnabled(true);
+        chart.setHoleColor(Color.TRANSPARENT);
+        chart.setHoleRadius(78f);
+        chart.setTransparentCircleRadius(0f);
+
+        chart.setRotationEnabled(false);
+        chart.setTouchEnabled(false);
+        chart.setHighlightPerTapEnabled(false);
+
+        chart.setRotationAngle(-90f);
+
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(value));
+        entries.add(new PieEntry(100f - value));
+
+        PieDataSet ds = new PieDataSet(entries, "");
+        ds.setDrawValues(false);
+        ds.setColors(Arrays.asList(ringColor, trackColor));
+        ds.setSliceSpace(3f);
+        ds.setSelectionShift(0f);
+
+        chart.setData(new PieData(ds));
+        chart.invalidate();
+    }
+
+    private void bindRing(PieChart chart, TextView tvValue, float value,
+                          int ringColor, int trackColor) {
+        float v = Math.max(0f, Math.min(100f, value));
+        float v2 = Math.max(0f, Math.min(100f, value));
+
+        setupRing(chart, v, ringColor, trackColor);
+
+        Float prev = (Float) tvValue.getTag(R.id.valTemp);
+        if (prev == null) prev = v;
+        animateNumber(tvValue, prev, v);
+        tvValue.setTag(R.id.valHum, v);
+
+        Float prev2 = (Float) tvValue.getTag(R.id.valTemp2);
+        if(prev2 == null) prev2 = v2;
+        animateNumber(tvValue, prev2, v2);
+        tvValue.setTag(R.id.valHum2);
+    }
+
+    private void animateNumber(TextView tv, float from, float to) {
+        ValueAnimator va = ValueAnimator.ofFloat(from, to);
+        va.setDuration(450);
+        va.addUpdateListener(anim -> {
+            float v = (float) anim.getAnimatedValue();
+            String txt = String.format(Locale.getDefault(), "%.0f", v);
+            tv.setText(txt);
+        });
+        va.start();
     }
 }

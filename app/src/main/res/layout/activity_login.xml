@@ -16,95 +16,99 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="24dp">
-
-    <LinearLayout
-        android:id="@+id/loginBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:elevation="4dp"
         android:padding="24dp"
-        android:layout_marginTop="240dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#FFFFFF"
-        android:clipToPadding="false"
-        android:gravity="center_horizontal">
-
-        <!-- Usuario -->
-        <EditText
-            android:id="@+id/etUsername"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/login_style"
-            android:textColor="#000000"
-            android:textColorHint="#858D67" />
-
-        <!-- Contraseña -->
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Contraseña"
-            android:padding="12dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/login_style"
-            android:textColor="#000000"
-            android:textColorHint="#858D67" />
-
-        <!-- Botón Login -->
-        <Button
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Iniciar Sesión"
-            android:textStyle="bold"
-            android:backgroundTint="#000000"
-            android:textColor="#FFFFFF"
-            android:layout_marginBottom="8dp" />
-
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="¿Olvido su contraseña?"
-            android:textColor="#ffffff"
-            android:textSize="14sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp" />
-    </LinearLayout>
+        android:layout_marginTop="0dp"
+        >
 
         <LinearLayout
-            android:layout_width="match_parent"
             android:id="@+id/LoggoBox"
+            android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:layout_marginStart="24dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="0dp"
             android:orientation="vertical">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:contentDescription="@null"
-                android:scaleType="centerCrop"
-                android:src="@drawable/compost_logo"
                 android:padding="100dp"
-                />
+                android:scaleType="centerCrop"
+                android:src="@drawable/compost_logo" />
 
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/loginBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LoggoBox"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="125dp"
+            android:layout_marginBottom="200dp"
+            android:backgroundTint="#FFFFFF"
+            android:clipToPadding="false"
+            android:elevation="4dp"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Usuario -->
+            <EditText
+                android:id="@+id/etUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/login_style"
+                android:hint="Email"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#858D67" />
+
+            <!-- Contraseña -->
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/login_style"
+                android:hint="Contraseña"
+                android:padding="12dp"
+                android:textColor="#000000"
+                android:textColorHint="#858D67" />
+
+            <!-- Botón Login -->
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:backgroundTint="#000000"
+                android:text="Iniciar Sesión"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvForgotPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="¿Olvido su contraseña?"
+                android:textColor="#ffffff"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
 
 
     </RelativeLayout>

@@ -19,4 +19,9 @@ public final class ApiRoutes {
     // Materials (según MaterialController.php)
     public static final String MATERIALS       = BASE + "/materials";
     public static String materialById(int id){ return BASE + "/materials/" + id; }
+
+    public static final String EXPORT_READINGS_PDF = BASE + "/export_readings_pdf";
+    public static final String EXPORT_READINGS_XLSX = BASE + "/export_readings_xlsx";
+    public static final String EXPORT_SALES_PDF = BASE + "/export_sales_pdf";
+    public static final String EXPORT_SALES_XLSX = BASE + "/export_sales_xlsx";
 }
