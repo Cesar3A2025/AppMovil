@@ -59,7 +59,12 @@ public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private Runnable updateTask;
     private DrawerLayout drawerLayout;
+
+    // Si más adelante usas el gráfico de composición, quedará listo.
     private PieChart chartGases;
+
+    // SOLO número de gas (PPM)
+    private TextView tvValGas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,14 +72,17 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
 
+        // --- INICIALIZA PRIMERO LAS VISTAS QUE USARÁS ---
+        tvValGas = findViewById(R.id.valGas);
+
         LineChart dashHistorico = findViewById(R.id.dashHistorico);
-        chartGases = findViewById(R.id.chartGases);
+        chartGases = findViewById(R.id.chartGases); // puede ser null si no existe en el layout
 
         int userId = getIntent().getIntExtra("USER_ID", -1);
         if (userId != -1) {
             updateTask = () -> {
                 fetchSensorData(userId);
-                fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
+                fetchHistoricalData(userId, dashHistorico);
                 handler.postDelayed(updateTask, 5000); // cada 5s
             };
             handler.post(updateTask);
@@ -114,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
+        // Primera carga del histórico
         fetchHistoricalData(userId, dashHistorico);
     }
 
@@ -186,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
                         float humedadSuelo = (float) safeDouble(data, "soil_moisture");
                         float gas          = (float) safeDouble(data, "mq135");
 
-                        // gases
+                        // gases (si luego usas composición)
                         float nh3     = (float) safeDouble(data, "ammonia");
                         float co2     = (float) safeDouble(data, "co2");
                         float co      = (float) safeDouble(data, "co");
@@ -195,14 +204,14 @@ public class MainActivity extends AppCompatActivity {
                         float smoke   = (float) safeDouble(data, "smoke");
 
                         runOnUiThread(() -> {
-                            // Colores
-                            int rojo  = Color.parseColor("#E84D4D");   // T°
-                            int morado= Color.parseColor("#7B43C5");   // Humedad
-                            int amarillo  = Color.parseColor("#F69621");   // T°
-                            int naranja= Color.parseColor("#FCC813");   // Humedad
-                            int track = Color.parseColor("#F1F2F6");   // pista
+                            // Colores para tus rings existentes
+                            int rojo     = Color.parseColor("#E84D4D");  // T°
+                            int morado   = Color.parseColor("#7B43C5");  // Humedad
+                            int amarillo = Color.parseColor("#F69621");  // T° suelo
+                            int naranja  = Color.parseColor("#FCC813");  // Humedad suelo
+                            int track    = Color.parseColor("#F1F2F6");  // pista
 
-                            // Vincula anillo + número (con animación)
+                            // Rings existentes (si ya están en tu layout)
                             bindRing(findViewById(R.id.dashTemperatura),
                                     (TextView) findViewById(R.id.valTemp),
                                     temperatura, rojo, track);
@@ -219,10 +228,19 @@ public class MainActivity extends AppCompatActivity {
                                     (TextView) findViewById(R.id.valHum2),
                                     humedadSuelo, naranja, track);
 
-                            // Otros diales que ya usabas
-                            setupPieChart(findViewById(R.id.dashGas),               gas,        Color.parseColor("#5F6AF8"), 15f, "mayor");
-                            // Gráfico composiciones de gases
-                            setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
+                            // --- SOLO ACTUALIZA EL NÚMERO DE GAS COMO ENTERO ---
+                            int gasInt = Math.round(gas); // 0..1000
+                            // O con animación suave:
+                            // int actual = 0;
+                            // try { actual = Integer.parseInt(tvValGas.getText().toString()); } catch (Exception ignored) {}
+                            // animateInt(tvValGas, actual, gasInt, 400);
+                            tvValGas.setText(String.valueOf(gasInt));
+
+                            if (chartGases != null) {
+                                setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
+                                chartGases.setCenterText("Concentracion de Gases\n" + gasInt);
+                                chartGases.setCenterTextSize(14f);
+                            }
                         });
                     } else {
                         String message = json.optString("message", "Respuesta inválida");
@@ -247,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
         HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_HIST)
                 .newBuilder()
                 .addQueryParameter("idUser", String.valueOf(userId))
+                // .addQueryParameter("from", from)
+                // .addQueryParameter("to", to)
                 .build();
 
         Request request = new Request.Builder().url(url).get().build();
@@ -300,42 +320,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupLineChart(LineChart chart) {
-        chart.setViewPortOffsets(32f, 16f, 40f, 48f);
         chart.getDescription().setEnabled(false);
         chart.setTouchEnabled(true);
         chart.setPinchZoom(true);
-        chart.setDoubleTapToZoomEnabled(false);
-        chart.setScaleYEnabled(false);
-        chart.setNoDataText("Sin datos");
-
-        // Grid y ejes
-        chart.getAxisRight().setEnabled(true);
-        chart.getAxisLeft().setAxisMinimum(0f);
-        chart.getAxisLeft().setAxisMaximum(100f);
-        chart.getAxisLeft().setTextColor(Color.parseColor("#6C6C6C"));
-        chart.getAxisLeft().setGridColor(Color.parseColor("#EAEAEA"));
-        chart.getAxisLeft().setGranularity(20f);
-
-        chart.getAxisRight().setAxisMinimum(0f);
-        chart.getAxisRight().setAxisMaximum(1000f);
-        chart.getAxisRight().setTextColor(Color.parseColor("#6C6C6C"));
-        chart.getAxisRight().setGridColor(Color.parseColor("#EAEAEA"));
-        chart.getAxisRight().setGranularity(200f);
-
-        XAxis x = chart.getXAxis();
-        x.setPosition(XAxis.XAxisPosition.BOTTOM);
-        x.setTextColor(Color.parseColor("#6C6C6C"));
-        x.setDrawGridLines(false);
-        x.setGranularity(1f);
-        x.setLabelRotationAngle(-30f);
-
-        chart.getLegend().setEnabled(false); // usas leyenda custom
-        chart.setExtraBottomOffset(8f);
-
-        // Marcador (tooltip)
-        MyMarkerView mv = new MyMarkerView(this, R.layout.marker_basic);
-        mv.setChartView(chart);
-        chart.setMarker(mv);
+        chart.getAxisRight().setEnabled(false);
     }
 
     private void updateLineChart(LineChart chart, List<String> labels,
@@ -361,6 +349,7 @@ public class MainActivity extends AppCompatActivity {
         chart.setData(lineData);
         chart.getAxisRight().setEnabled(false);
 
+        // Eje X con fechas
         XAxis xAxis = chart.getXAxis();
         xAxis.setGranularity(1f);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -368,7 +357,8 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setLabelRotationAngle(-45);
         xAxis.setLabelCount(labels.size(), true);
         xAxis.setValueFormatter(new ValueFormatter() {
-            @Override public String getFormattedValue(float value) {
+            @Override
+            public String getFormattedValue(float value) {
                 int index = (int) value;
                 return (index >= 0 && index < labels.size()) ? labels.get(index) : "";
             }
@@ -410,23 +400,43 @@ public class MainActivity extends AppCompatActivity {
         chart.invalidate();
     }
 
-    private void setupGasChart(PieChart chart, float nh3, float co2, float co, float benzene, float alcohol, float smoke) {
+    private void setupGasChart(PieChart chart, float nh3, float co2, float co,
+                               float benzene, float alcohol, float smoke) {
+        if (chart == null) return;
+
+        // Si todo es 0, muestra un placeholder
+        boolean allZero = (nh3 == 0 && co2 == 0 && co == 0 && benzene == 0 && alcohol == 0 && smoke == 0);
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(nh3, "NH₃"));
-        entries.add(new PieEntry(co2, "CO₂"));
-        entries.add(new PieEntry(co, "CO"));
-        entries.add(new PieEntry(benzene, "Benceno"));
-        entries.add(new PieEntry(alcohol, "Alcohol"));
-        entries.add(new PieEntry(smoke, "Humo"));
+        if (allZero) {
+            entries.add(new PieEntry(1f, "Sin datos"));
+        } else {
+            entries.add(new PieEntry(Math.max(0, nh3),     "NH₃"));
+            entries.add(new PieEntry(Math.max(0, co2),     "CO₂"));
+            entries.add(new PieEntry(Math.max(0, co),      "CO"));
+            entries.add(new PieEntry(Math.max(0, benzene), "Benceno"));
+            entries.add(new PieEntry(Math.max(0, alcohol), "Alcohol"));
+            entries.add(new PieEntry(Math.max(0, smoke),   "Humo"));
+        }
 
         PieDataSet dataSet = new PieDataSet(entries, "Composición Estimada de Gases");
         dataSet.setColors(new int[]{
-                Color.rgb(76, 175, 80), Color.rgb(255, 152, 0),
-                Color.RED, Color.BLUE, Color.MAGENTA, Color.DKGRAY
+                Color.rgb(76, 175, 80),   // NH3
+                Color.rgb(255, 152, 0),   // CO2
+                Color.RED,                // CO
+                Color.BLUE,               // Benceno
+                Color.MAGENTA,            // Alcohol
+                Color.DKGRAY              // Humo
         });
         dataSet.setSliceSpace(2f);
         dataSet.setValueTextSize(12f);
         dataSet.setValueTextColor(Color.BLACK);
+
+        // Mostrar valores como enteros
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override public String getFormattedValue(float value) {
+                return String.valueOf(Math.round(value));
+            }
+        });
 
         chart.setData(new PieData(dataSet));
         chart.setDrawHoleEnabled(true);
@@ -435,9 +445,16 @@ public class MainActivity extends AppCompatActivity {
         chart.setEntryLabelColor(Color.BLACK);
         chart.setEntryLabelTextSize(12f);
         chart.getDescription().setEnabled(false);
-        chart.setCenterText("Composición de Gases");
-        chart.setCenterTextSize(14f);
         chart.getLegend().setEnabled(true);
+        chart.setUsePercentValues(false);
+        chart.setDrawEntryLabels(!allZero);   // no muestres labels si es placeholder
+
+        // Si no hay datos, indica en el centro
+        if (allZero) {
+            chart.setCenterText("Sin datos");
+            chart.setCenterTextSize(14f);
+        }
+
         chart.invalidate();
     }
 
@@ -470,7 +487,6 @@ public class MainActivity extends AppCompatActivity {
         cal.add(Calendar.DAY_OF_MONTH, -days);
         return cal.getTime();
     }
-
 
     private void setupRing(PieChart chart, float percent, int ringColor, int trackColor) {
         float value = Math.max(0f, Math.min(100f, percent));
@@ -531,6 +547,13 @@ public class MainActivity extends AppCompatActivity {
             String txt = String.format(Locale.getDefault(), "%.0f", v);
             tv.setText(txt);
         });
+        va.start();
+    }
+
+    private void animateInt(TextView tv, int from, int to, long ms) {
+        ValueAnimator va = ValueAnimator.ofInt(from, to);
+        va.setDuration(ms);
+        va.addUpdateListener(a -> tv.setText(String.valueOf((int) a.getAnimatedValue())));
         va.start();
     }
 }

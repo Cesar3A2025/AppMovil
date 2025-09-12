@@ -5,7 +5,7 @@ public final class ApiRoutes {
 
     // https://compos.alwaysdata.net/
     // http://192.168.0.55/composta_esp33/public/
-    public static final String BASE = "https://compos.alwaysdata.net/api";
+    public static final String BASE = "http://192.168.0.55/composta_esp33/public/api";
 
     // Users (según UserController.php)
     public static final String LOGIN           = BASE + "/login";
