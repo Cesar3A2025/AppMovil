@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                Toast.makeText(this, "Inicio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ya esta en Inicio", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_reports) {
                 Intent intent = new Intent(this, Reports.class);
                 intent.putExtra("USER_ID", userId);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // Primera carga del histórico
+        // Primera carga del grafico del histórico
         fetchHistoricalData(userId, dashHistorico);
     }
 
@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
     // -------- Networking --------
 
     private void fetchSensorData(int userId) {
+
         OkHttpClient client = ApiClient.get();
 
         HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_LATEST)
@@ -193,15 +194,15 @@ public class MainActivity extends AppCompatActivity {
                         float humedad      = (float) safeDouble(data, "humidity");
                         float tempSuelo    = (float) safeDouble(data, "ds18b20_temp");
                         float humedadSuelo = (float) safeDouble(data, "soil_moisture");
-                        float gas          = (float) safeDouble(data, "mq135");
 
-                        // gases (si luego usas composición)
-                        float nh3     = (float) safeDouble(data, "ammonia");
-                        float co2     = (float) safeDouble(data, "co2");
-                        float co      = (float) safeDouble(data, "co");
-                        float benzene = (float) safeDouble(data, "benzene");
-                        float alcohol = (float) safeDouble(data, "alcohol");
-                        float smoke   = (float) safeDouble(data, "smoke");
+                        // gases
+                        float nh3     = sanitize((float) safeDouble(data, "ammonia"));
+                        float co2     = sanitize((float) safeDouble(data, "co2"));
+                        float co      = sanitize((float) safeDouble(data, "co"));
+                        float benzene = sanitize((float) safeDouble(data, "benzene"));
+                        float alcohol = sanitize((float) safeDouble(data, "alcohol"));
+                        float smoke   = sanitize((float) safeDouble(data, "smoke"));
+                        float gas     = sanitize((float) safeDouble(data, "mq135"));
 
                         runOnUiThread(() -> {
                             // Colores para tus rings existentes
@@ -228,18 +229,21 @@ public class MainActivity extends AppCompatActivity {
                                     (TextView) findViewById(R.id.valHum2),
                                     humedadSuelo, naranja, track);
 
-                            // --- SOLO ACTUALIZA EL NÚMERO DE GAS COMO ENTERO ---
-                            int gasInt = Math.round(gas); // 0..1000
-                            // O con animación suave:
-                            // int actual = 0;
-                            // try { actual = Integer.parseInt(tvValGas.getText().toString()); } catch (Exception ignored) {}
-                            // animateInt(tvValGas, actual, gasInt, 400);
+                            // Actuliza PPM
+                            int gasInt = Math.round(gas);
                             tvValGas.setText(String.valueOf(gasInt));
 
+                            // Actualiza el grafico de composicion de gas
                             if (chartGases != null) {
+                                boolean isAllZero = (nh3 == 0f && co2 == 0f && co == 0f
+                                        && benzene == 0f && alcohol == 0f && smoke == 0f);
+
                                 setupGasChart(chartGases, nh3, co2, co, benzene, alcohol, smoke);
-                                chartGases.setCenterText("Concentracion de Gases\n" + gasInt);
-                                chartGases.setCenterTextSize(14f);
+
+                                if (!isAllZero) {
+                                    chartGases.setCenterText("Elementos del Gas");
+                                    chartGases.setCenterTextSize(14f);
+                                }
                             }
                         });
                     } else {
@@ -304,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
                             humidityEntries.add(new Entry(i, (float) safeDouble(d, "humidity")));
                             dsEntries.add(new Entry(i, (float) safeDouble(d, "ds18b20_temp")));
                             soilEntries.add(new Entry(i, (float) safeDouble(d, "soil_moisture")));
-                            gasEntries.add(new Entry(i, (float) safeDouble(d, "mq135")));
                         }
 
                         runOnUiThread(() -> updateLineChart(chart, labels, tempEntries, humidityEntries, dsEntries, soilEntries, gasEntries));
@@ -367,49 +370,20 @@ public class MainActivity extends AppCompatActivity {
         chart.invalidate();
     }
 
-    private void setupPieChart(PieChart chart, float value, int ringColor, float limiteMax, String modoCritico) {
-        float v = Math.max(0f, Math.min(100f, value));
-
-        chart.setUsePercentValues(false);
-        chart.getDescription().setEnabled(false);
-        chart.setDrawHoleEnabled(true);
-        chart.setHoleColor(Color.TRANSPARENT);
-        chart.setHoleRadius(78f);
-        chart.setTransparentCircleRadius(0f);
-        chart.setDrawRoundedSlices(true);
-
-        chart.setDrawCenterText(false);
-        chart.setDrawEntryLabels(false);
-        chart.getLegend().setEnabled(false);
-
-        chart.setRotationEnabled(false);
-        chart.setTouchEnabled(false);
-        chart.setHighlightPerTapEnabled(false);
-
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(v));
-        entries.add(new PieEntry(100f - v));
-
-        PieDataSet dataSet = new PieDataSet(entries, "");
-        dataSet.setColors(ringColor, Color.parseColor("#ECECEC"));
-        dataSet.setSliceSpace(2f);
-        dataSet.setSelectionShift(0f);
-        dataSet.setDrawValues(false);
-
-        chart.setData(new PieData(dataSet));
-        chart.invalidate();
-    }
 
     private void setupGasChart(PieChart chart, float nh3, float co2, float co,
                                float benzene, float alcohol, float smoke) {
+        // Si el grafico no existe terminara el metodo para evitar errores
         if (chart == null) return;
-
-        // Si todo es 0, muestra un placeholder
+        // Devuelve true o false si todos los datos de gases son 0
         boolean allZero = (nh3 == 0 && co2 == 0 && co == 0 && benzene == 0 && alcohol == 0 && smoke == 0);
+        // Crea una lista PieEntry para guardar los datos de los gases
         List<PieEntry> entries = new ArrayList<>();
+        // Si el booleano que se creo devuelve verdadero entoces se agrega solo una particion de datos y un label sin datos
         if (allZero) {
             entries.add(new PieEntry(1f, "Sin datos"));
         } else {
+            // En caso contrario se rellena los atributos con los valores de los compuestos del gas
             entries.add(new PieEntry(Math.max(0, nh3),     "NH₃"));
             entries.add(new PieEntry(Math.max(0, co2),     "CO₂"));
             entries.add(new PieEntry(Math.max(0, co),      "CO"));
@@ -417,16 +391,17 @@ public class MainActivity extends AppCompatActivity {
             entries.add(new PieEntry(Math.max(0, alcohol), "Alcohol"));
             entries.add(new PieEntry(Math.max(0, smoke),   "Humo"));
         }
-
-        PieDataSet dataSet = new PieDataSet(entries, "Composición Estimada de Gases");
+        // Crea y configura el conjunto de datos que se van a pintar dentro el PieChart
+        PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setColors(new int[]{
-                Color.rgb(76, 175, 80),   // NH3
-                Color.rgb(255, 152, 0),   // CO2
-                Color.RED,                // CO
-                Color.BLUE,               // Benceno
-                Color.MAGENTA,            // Alcohol
-                Color.DKGRAY              // Humo
+                Color.rgb(76, 175, 80),
+                Color.rgb(255, 152, 0),
+                Color.RED,
+                Color.BLUE,
+                Color.MAGENTA,
+                Color.DKGRAY
         });
+
         dataSet.setSliceSpace(2f);
         dataSet.setValueTextSize(12f);
         dataSet.setValueTextColor(Color.BLACK);
@@ -447,13 +422,6 @@ public class MainActivity extends AppCompatActivity {
         chart.getDescription().setEnabled(false);
         chart.getLegend().setEnabled(true);
         chart.setUsePercentValues(false);
-        chart.setDrawEntryLabels(!allZero);   // no muestres labels si es placeholder
-
-        // Si no hay datos, indica en el centro
-        if (allZero) {
-            chart.setCenterText("Sin datos");
-            chart.setCenterTextSize(14f);
-        }
 
         chart.invalidate();
     }
@@ -550,10 +518,9 @@ public class MainActivity extends AppCompatActivity {
         va.start();
     }
 
-    private void animateInt(TextView tv, int from, int to, long ms) {
-        ValueAnimator va = ValueAnimator.ofInt(from, to);
-        va.setDuration(ms);
-        va.addUpdateListener(a -> tv.setText(String.valueOf((int) a.getAnimatedValue())));
-        va.start();
+    private float sanitize(float v) {
+        if (Float.isNaN(v) || Float.isInfinite(v) || v < 0f) return 0f;
+        return v;
     }
+
 }

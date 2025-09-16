@@ -4,8 +4,9 @@ public final class ApiRoutes {
     private ApiRoutes(){}
 
     // https://compos.alwaysdata.net/
+    // 192.168.0.8
     // http://192.168.0.55/composta_esp33/public/
-    public static final String BASE = "http://192.168.0.55/composta_esp33/public/api";
+    public static final String BASE = "https://compos.alwaysdata.net/api";
 
     // Users (según UserController.php)
     public static final String LOGIN           = BASE + "/login";
@@ -18,7 +19,6 @@ public final class ApiRoutes {
 
     // Materials (según MaterialController.php)
     public static final String MATERIALS       = BASE + "/materials";
-    public static String materialById(int id){ return BASE + "/materials/" + id; }
 
     public static final String EXPORT_READINGS_PDF = BASE + "/export_readings_pdf";
     public static final String EXPORT_READINGS_XLSX = BASE + "/export_readings_xlsx";

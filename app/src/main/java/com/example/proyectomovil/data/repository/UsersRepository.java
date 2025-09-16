@@ -133,16 +133,11 @@ public class UsersRepository {
                 .add("username", payload.username)
                 .add("email", payload.email);
 
-        // contraseña opcional si tu backend lo acepta
-        // if (payload.password != null && !payload.password.isEmpty()) {
-        //     fb.add("password", payload.password);
-        // }
-
         RequestBody body = fb.build();
 
         Request req = new Request.Builder()
-                .url(ApiRoutes.USER_UPDATE)   // <-- POST /update_user
-                .post(body)                   // <-- IMPORTANTE: POST, no PUT
+                .url(ApiRoutes.USER_UPDATE)
+                .post(body)
                 .build();
 
         ApiClient.get().newCall(req).enqueue(new okhttp3.Callback() {
@@ -158,7 +153,6 @@ public class UsersRepository {
                         return;
                     }
 
-                    // Algunos backends devuelven solo {success:true}; otros devuelven {success:true, data:{...}}
                     try {
                         JSONObject json = new JSONObject(raw);
                         boolean ok = json.optBoolean("success", false);
