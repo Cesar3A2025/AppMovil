@@ -118,38 +118,35 @@ public class Reports extends AppCompatActivity {
 
     /** Paso 3: armar URL según tipo/formato + rango de fechas y lanzar DownloadManager */
     private void downloadFile(String tipo, String formato) {
-        String endpoint;
-        String fileName;
+        String endpoint, fileName;
 
         if ("lecturas".equals(tipo)) {
-            if ("pdf".equalsIgnoreCase(formato)) {
-                endpoint = ApiRoutes.EXPORT_READINGS_PDF;
-                fileName = "lecturas_compostaje.pdf";
-            } else {
-                endpoint = ApiRoutes.EXPORT_READINGS_XLSX;
-                fileName = "lecturas_compostaje.xlsx";
-            }
-        } else { // "ventas"
-            if ("pdf".equalsIgnoreCase(formato)) {
-                endpoint = ApiRoutes.EXPORT_SALES_PDF;
-                fileName = "ventas_compostaje.pdf";
-            } else {
-                endpoint = ApiRoutes.EXPORT_SALES_XLSX;
-                fileName = "ventas_compostaje.xlsx";
-            }
+            endpoint = "pdf".equalsIgnoreCase(formato)
+                    ? ApiRoutes.EXPORT_READINGS_PDF
+                    : ApiRoutes.EXPORT_READINGS_XLSX;
+            fileName = "lecturas_compostaje." + formato.toLowerCase();
+        } else { // ventas
+            endpoint = "pdf".equalsIgnoreCase(formato)
+                    ? ApiRoutes.EXPORT_SALES_PDF
+                    : ApiRoutes.EXPORT_SALES_XLSX;
+            fileName = "ventas_compostaje_" + fromDate + "_a_" + toDate + "." + formato.toLowerCase();
         }
 
         try {
-            // Construimos la URL con query params seguros
-            HttpUrl url = HttpUrl.parse(endpoint).newBuilder()
-                    .addQueryParameter("idUser", String.valueOf(userId))
-                    .addQueryParameter("from", fromDate)
-                    .addQueryParameter("to", toDate)
-                    .build();
+            HttpUrl.Builder builder = HttpUrl.parse(endpoint).newBuilder()
+                    .addQueryParameter("idUser", String.valueOf(userId));
+
+            // Solo ventas requieren rango
+            if ("ventas".equals(tipo)) {
+                builder.addQueryParameter("from", fromDate)
+                        .addQueryParameter("to",   toDate);
+            }
+
+            HttpUrl url = builder.build();
 
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url.toString()));
             request.setTitle("Descargando reporte de " + tipo);
-            request.setDescription("Formato: " + formato.toUpperCase() + " | Rango: " + fromDate + " a " + toDate);
+            request.setDescription("Formato: " + formato.toUpperCase());
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 
