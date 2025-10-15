@@ -12,57 +12,78 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.proyectomovil.domain.models.Materials;
 import com.example.proyectomovil.R;
+import com.example.proyectomovil.data.api.ApiRoutes;
+import com.example.proyectomovil.domain.models.Materials;
 import com.google.android.material.chip.Chip;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MaterialsAdapter extends RecyclerView.Adapter<MaterialsAdapter.ViewHolder>{
+public class MaterialsAdapter extends RecyclerView.Adapter<MaterialsAdapter.ViewHolder> {
     private final Context context;
     private List<Materials> items;
-    private final String baseImagesUrl;
 
-    public MaterialsAdapter(Context context, List<Materials> items, String baseImagesUrl) {
+    public MaterialsAdapter(Context context, List<Materials> items) {
         this.context = context;
         this.items = (items != null) ? items : new ArrayList<>();
-        this.baseImagesUrl = (baseImagesUrl != null) ? baseImagesUrl : "";
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MaterialsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_material, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MaterialsAdapter.ViewHolder holder, int position) {
         Materials m = items.get(position);
+
         holder.txtName.setText(m.getName());
         holder.txtDesc.setText(m.getDescription());
         holder.chipClasif.setText(m.getClasification());
         holder.chipAptitud.setText(m.getAptitude());
         holder.chipCategoria.setText(m.getTypeCategory());
 
-        String path = m.getImage();
-        String url = (path != null && !path.isEmpty())
-                ? (path.startsWith("http") ? path : concatUrl(baseImagesUrl, path))
-                : null;
+        // Construir URL de imagen
+        String path = m.getImage(); // m.getImage() debe contener lo que devuelve la API en image_url (relativa o absoluta)
+        String url = null;
+        if (path != null && !path.isEmpty()) {
+            url = path.startsWith("http") ? path : ApiRoutes.BASE_IMAGES + (path.startsWith("/") ? "" : "/") + path;
+        }
 
         Glide.with(holder.itemView.getContext())
                 .load(url)
-                .placeholder(R.drawable.home)
+                .placeholder(R.drawable.home) // ajusta tu placeholder
                 .error(R.drawable.home)
                 .into(holder.img);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, MaterialDetailActivity.class);
+            String clasif = m.getClasification() != null ? m.getClasification().toLowerCase() : "";
+
+            Intent intent;
+            switch (clasif) {
+                case "verde":
+                    intent = new Intent(context, GreenActivity.class);
+                    break;
+                case "marron":
+                    intent = new Intent(context, BrownActivity.class);
+                    break;
+                case "no_compostable":
+                    intent = new Intent(context, NoCompostableActivity.class);
+                    break;
+                default:
+                    // fallback: abrir detalle genérico
+                    intent = new Intent(context, MaterialDetailActivity.class);
+                    break;
+            }
+
+            // Pasamos datos para que la Activity pueda mostrar info del material seleccionado
             intent.putExtra("id", m.getId());
             intent.putExtra("name", m.getName());
-            intent.putExtra("clasification", m.getClasification());
-            intent.putExtra("aptitude", m.getAptitude());
+            intent.putExtra("description", m.getDescription());
+            intent.putExtra("image", m.getImage()); // ruta relativa o absoluta
             context.startActivity(intent);
         });
     }
@@ -75,13 +96,6 @@ public class MaterialsAdapter extends RecyclerView.Adapter<MaterialsAdapter.View
     public void updateData(List<Materials> newItems) {
         this.items = (newItems != null) ? newItems : new ArrayList<>();
         notifyDataSetChanged();
-    }
-
-    private String concatUrl(String base, String rel) {
-        if (base == null) return rel;
-        if (base.endsWith("/") && rel.startsWith("/")) return base + rel.substring(1);
-        if (!base.endsWith("/") && !rel.startsWith("/")) return base + "/" + rel;
-        return base + rel;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

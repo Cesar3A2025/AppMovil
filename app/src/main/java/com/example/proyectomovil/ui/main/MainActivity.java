@@ -1,6 +1,8 @@
 package com.example.proyectomovil.ui.main;
 
 import android.animation.ValueAnimator;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.graphics.Color;
 
@@ -8,7 +10,17 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -20,8 +32,10 @@ import com.example.proyectomovil.R;
 import com.example.proyectomovil.Reports;
 import com.example.proyectomovil.data.api.ApiClient;
 import com.example.proyectomovil.data.api.ApiRoutes;
+import com.example.proyectomovil.ui.history.HistoryActivity;
 import com.example.proyectomovil.ui.materials.MaterialsActivity;
 import com.example.proyectomovil.ui.user.EditUser;
+import com.example.proyectomovil.workers.AlertsWorker;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -46,6 +60,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -53,57 +68,79 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import com.example.proyectomovil.ui.base.BaseDrawerActivity;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
+public class MainActivity extends BaseDrawerActivity {
 
     private final Handler handler = new Handler();
     private Runnable updateTask;
     private DrawerLayout drawerLayout;
 
-    // Si más adelante usas el gráfico de composición, quedará listo.
     private PieChart chartGases;
-
-    // SOLO número de gas (PPM)
     private TextView tvValGas;
+
+    private boolean isAlertShowing = false;        // Para controlar si hay alerta activa
+    private boolean isAlertMinimized = false;      // Para controlar si está minimizada
+    private ImageView alertMinimizedIndicator;     // Referencia al icono
+    private Handler blinkHandler = new Handler();  // Para parpadeo
+    private Runnable blinkRunnable;
+    private androidx.appcompat.app.AlertDialog activeAlertDialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
+        setContentWithDrawer(R.layout.activity_main);
+        setTitle("Dashboard");
 
-        // --- INICIALIZA PRIMERO LAS VISTAS QUE USARÁS ---
+        alertMinimizedIndicator = findViewById(R.id.alertMinimizedIndicator);
+        alertMinimizedIndicator.setOnClickListener(v -> {
+            if (isAlertMinimized && activeAlertDialog != null) {
+                activeAlertDialog.show(); // Vuelve a mostrar la alerta
+                isAlertMinimized = false;
+                stopBlinking();
+            }
+        });
+
         tvValGas = findViewById(R.id.valGas);
-
         LineChart dashHistorico = findViewById(R.id.dashHistorico);
-        chartGases = findViewById(R.id.chartGases); // puede ser null si no existe en el layout
+        chartGases = findViewById(R.id.chartGases);
 
         int userId = getIntent().getIntExtra("USER_ID", -1);
+
+        // ----------------- Handler para alertas inmediatas -----------------
         if (userId != -1) {
             updateTask = () -> {
                 fetchSensorData(userId);
                 fetchHistoricalData(userId, dashHistorico);
-                handler.postDelayed(updateTask, 5000); // cada 5s
+                fetchAlertsFromApi(); // 🚨 Fetch de alertas en primer plano
+                handler.postDelayed(updateTask, 5000);
             };
             handler.post(updateTask);
         }
 
         setupLineChart(dashHistorico);
 
+        // ----------------- Menú lateral -----------------
         drawerLayout = findViewById(R.id.drawer_layout);
         ImageView btnMenu = findViewById(R.id.btn_menu);
         btnMenu.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
-        ((TextView) headerView.findViewById(R.id.tvHeaderName)).setText(getIntent().getStringExtra("USER_NAME"));
-        ((TextView) headerView.findViewById(R.id.tvHeaderEmail)).setText(getIntent().getStringExtra("USER_EMAIL"));
+        ((TextView) headerView.findViewById(R.id.tvHeaderName))
+                .setText(getIntent().getStringExtra("USER_NAME"));
+        ((TextView) headerView.findViewById(R.id.tvHeaderEmail))
+                .setText(getIntent().getStringExtra("USER_EMAIL"));
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                Toast.makeText(this, "Ya esta en Inicio", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Ya está en Inicio", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_reports) {
                 Intent intent = new Intent(this, Reports.class);
                 intent.putExtra("USER_ID", userId);
@@ -117,14 +154,49 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Configuración", Toast.LENGTH_SHORT).show();
             } else if (id == R.id.nav_materials) {
                 startActivity(new Intent(this, MaterialsActivity.class));
+            } else if (id == R.id.nav_historial) {
+                Intent intent = new Intent(this, HistoryActivity.class);
+                intent.putExtra("USER_ID", userId);
+                startActivity(intent);
             }
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
-        // Primera carga del grafico del histórico
-        fetchHistoricalData(userId, dashHistorico);
+        // ----------------- WorkManager para alertas en segundo plano -----------------
+        createNotificationChannel();
+        scheduleAlertsWorker();
+        /*
+        Data inputData = new Data.Builder()
+                .putInt("userId", userId)
+                .build();
+
+        OneTimeWorkRequest testWork =
+                new OneTimeWorkRequest.Builder(AlertsWorker.class)
+                        .setInputData(inputData)
+                        .build();
+
+        WorkManager.getInstance(this).enqueue(testWork);*/
     }
+
+
+    private void scheduleAlertsWorker() {
+        Constraints constraints = new Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build();
+
+        PeriodicWorkRequest workRequest = new PeriodicWorkRequest.Builder(AlertsWorker.class, 15, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build();
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "alerts_worker",
+                ExistingPeriodicWorkPolicy.KEEP,
+                workRequest
+        );
+    }
+
 
     @Override
     protected void onPause() {
@@ -141,11 +213,12 @@ public class MainActivity extends AppCompatActivity {
                 updateTask = () -> {
                     fetchSensorData(userId);
                     fetchHistoricalData(userId, findViewById(R.id.dashHistorico));
-                    handler.postDelayed(updateTask, 2000); // cada 2s
+                    handler.postDelayed(updateTask, 2000);
                 };
             }
             handler.post(updateTask);
         }
+        fetchAlertsFromApi();
     }
 
     @Override
@@ -154,22 +227,18 @@ public class MainActivity extends AppCompatActivity {
         if (updateTask != null) handler.removeCallbacks(updateTask);
     }
 
-    // -------- Networking --------
+    // ----------- Métodos fetchSensorData y fetchHistoricalData se quedan igual -----------
 
     private void fetchSensorData(int userId) {
-
         OkHttpClient client = ApiClient.get();
-
         HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_LATEST)
                 .newBuilder()
                 .addQueryParameter("idUser", String.valueOf(userId))
                 .build();
 
         Request request = new Request.Builder().url(url).get().build();
-
         client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+            @Override public void onFailure(Call call, IOException e) {
                 runOnUiThread(() ->
                         Toast.makeText(MainActivity.this, "Error de red: " + e.getMessage(), Toast.LENGTH_SHORT).show()
                 );
@@ -177,6 +246,13 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                // Ignorar 429 Too Many Requests
+                if (response.code() == 429) {
+                    // Opcional: log para debug
+                    // Log.w("SensorData", "Recibido 429, ignorando esta respuesta");
+                    return;
+                }
+
                 String resp = response.body() != null ? response.body().string() : "";
                 if (!response.isSuccessful()) {
                     runOnUiThread(() ->
@@ -195,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
                         float tempSuelo    = (float) safeDouble(data, "ds18b20_temp");
                         float humedadSuelo = (float) safeDouble(data, "soil_moisture");
 
-                        // gases
                         float nh3     = sanitize((float) safeDouble(data, "ammonia"));
                         float co2     = sanitize((float) safeDouble(data, "co2"));
                         float co      = sanitize((float) safeDouble(data, "co"));
@@ -205,14 +280,12 @@ public class MainActivity extends AppCompatActivity {
                         float gas     = sanitize((float) safeDouble(data, "mq135"));
 
                         runOnUiThread(() -> {
-                            // Colores para tus rings existentes
-                            int rojo     = Color.parseColor("#E84D4D");  // T°
-                            int morado   = Color.parseColor("#7B43C5");  // Humedad
-                            int amarillo = Color.parseColor("#F69621");  // T° suelo
-                            int naranja  = Color.parseColor("#FCC813");  // Humedad suelo
-                            int track    = Color.parseColor("#F1F2F6");  // pista
+                            int rojo     = Color.parseColor("#E84D4D");
+                            int morado   = Color.parseColor("#7B43C5");
+                            int amarillo = Color.parseColor("#F69621");
+                            int naranja  = Color.parseColor("#FCC813");
+                            int track    = Color.parseColor("#F1F2F6");
 
-                            // Rings existentes (si ya están en tu layout)
                             bindRing(findViewById(R.id.dashTemperatura),
                                     (TextView) findViewById(R.id.valTemp),
                                     temperatura, rojo, track);
@@ -229,11 +302,9 @@ public class MainActivity extends AppCompatActivity {
                                     (TextView) findViewById(R.id.valHum2),
                                     humedadSuelo, naranja, track);
 
-                            // Actuliza PPM
                             int gasInt = Math.round(gas);
                             tvValGas.setText(String.valueOf(gasInt));
 
-                            // Actualiza el grafico de composicion de gas
                             if (chartGases != null) {
                                 boolean isAllZero = (nh3 == 0f && co2 == 0f && co == 0f
                                         && benzene == 0f && alcohol == 0f && smoke == 0f);
@@ -246,48 +317,33 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         });
-                    } else {
-                        String message = json.optString("message", "Respuesta inválida");
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, message, Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
                     runOnUiThread(() ->
-                            Toast.makeText(MainActivity.this, "Error al parsear respuesta: " + preview(resp), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(MainActivity.this, "Error al parsear respuesta", Toast.LENGTH_SHORT).show()
                     );
                 }
             }
+
         });
     }
 
     private void fetchHistoricalData(int userId, LineChart chart) {
         OkHttpClient client = ApiClient.get();
-
-        // Rango últimos 7 días (si tu API lo usa)
-        String to = formatDate(new Date());
-        String from = formatDate(daysAgo(7));
-
         HttpUrl url = HttpUrl.parse(ApiRoutes.READINGS_HIST)
                 .newBuilder()
                 .addQueryParameter("idUser", String.valueOf(userId))
-                // .addQueryParameter("from", from)
-                // .addQueryParameter("to", to)
                 .build();
 
         Request request = new Request.Builder().url(url).get().build();
-
         client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al obtener histórico: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+            @Override public void onFailure(Call call, IOException e) {
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al obtener histórico", Toast.LENGTH_SHORT).show());
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            @Override public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body() != null ? response.body().string() : "";
-                if (!response.isSuccessful()) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "HTTP " + response.code() + ": " + preview(json), Toast.LENGTH_SHORT).show());
-                    return;
-                }
+                if (!response.isSuccessful()) return;
 
                 try {
                     JSONObject obj = new JSONObject(json);
@@ -311,16 +367,205 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         runOnUiThread(() -> updateLineChart(chart, labels, tempEntries, humidityEntries, dsEntries, soilEntries, gasEntries));
-                    } else {
-                        String msg = obj.optString("message", "Respuesta inválida");
-                        runOnUiThread(() -> Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show());
                     }
                 } catch (JSONException e) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error al parsear histórico: " + preview(json), Toast.LENGTH_SHORT).show());
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, "Error parseando histórico", Toast.LENGTH_SHORT).show());
                 }
             }
         });
     }
+
+    private void fetchAlertsFromApi() {
+        int userId = getIntent().getIntExtra("USER_ID", -1);
+        if (userId != -1) fetchAlerts(userId);
+    }
+
+    private void fetchAlerts(int userId) {
+        OkHttpClient client = ApiClient.get();
+        HttpUrl url = HttpUrl.parse(ApiRoutes.ALERTS)
+                .newBuilder()
+                .addQueryParameter("idUser", String.valueOf(userId))
+                .build();
+
+        Request request = new Request.Builder().url(url).get().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override public void onFailure(Call call, IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(MainActivity.this, "Error al obtener alertas", Toast.LENGTH_SHORT).show()
+                );
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                // Si el servidor devuelve 429, lo ignoramos y no mostramos Toast ni alertas
+                if (response.code() == 429) {
+                    // Opcional: podrías hacer un log en consola si quieres
+                    // Log.w("Alerts", "Recibido 429 Too Many Requests, ignorando...");
+                    return;
+                }
+
+                String resp = response.body() != null ? response.body().string() : "";
+                if (!response.isSuccessful()) return;
+
+                try {
+                    JSONObject json = new JSONObject(resp);
+                    if (json.getBoolean("success")) {
+                        JSONArray alerts = json.getJSONArray("alerts");
+                        if (alerts.length() > 0) {
+                            StringBuilder alertMsg = new StringBuilder();
+                            for (int i = 0; i < alerts.length(); i++) {
+                                alertMsg.append("• ").append(alerts.getString(i)).append("\n");
+                            }
+
+                            runOnUiThread(() -> {
+                                // Solo mostrar alerta si no hay activa ni minimizada
+                                if (!isAlertShowing && !isAlertMinimized) {
+                                    showAlertDialog(alertMsg.toString());
+                                }
+                            });
+                        }
+                    }
+                } catch (Exception e) {
+                    runOnUiThread(() ->
+                            Toast.makeText(MainActivity.this, "Error al parsear alertas", Toast.LENGTH_SHORT).show()
+                    );
+                }
+            }
+
+        });
+    }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Uri soundUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.alert_sound);
+
+            NotificationChannel channel = new NotificationChannel(
+                    "alerts_channel",
+                    "Alertas Compostaje",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setDescription("Canal para notificaciones de alertas");
+
+            // Asignar sonido
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .build();
+            channel.setSound(soundUri, audioAttributes);
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            if (manager != null) manager.createNotificationChannel(channel);
+        }
+    }
+
+    private String lastAlertMessage = ""; // Guardará la alerta actual
+
+    private MediaPlayer mediaPlayer; // Colócalo como atributo de la clase MainActivity
+
+    private void showAlertDialog(String message) {
+        if (isAlertShowing || isAlertMinimized) return; // No mostrar nueva alerta si ya hay o está minimizada
+
+        lastAlertMessage = message;
+        isAlertShowing = true;
+
+        // Iniciar sonido de alerta
+        playAlertSound();
+
+        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("🚨 Alertas del Compostaje")
+                .setMessage(message)
+                .setPositiveButton("OK", (dialog, which) -> {
+                    isAlertShowing = false;
+                    isAlertMinimized = false;
+                    stopBlinking();
+                    alertMinimizedIndicator.setVisibility(View.GONE);
+
+                    // Detener sonido
+                    stopAlertSound();
+                })
+                .setNegativeButton("Minimizar", (dialog, which) -> {
+                    isAlertShowing = false;
+                    isAlertMinimized = true;
+                    startBlinking();
+
+                    // Detener sonido mientras está minimizada
+                    stopAlertSound();
+                })
+                .setCancelable(false);
+
+        activeAlertDialog = builder.create();
+        activeAlertDialog.show();
+    }
+
+    // -------------------- Métodos de sonido --------------------
+    private void playAlertSound() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(this, R.raw.alert_sound); // Reemplaza con tu archivo en res/raw
+            mediaPlayer.setLooping(true); // Repetir mientras la alerta esté activa
+        }
+        mediaPlayer.start();
+    }
+
+    private void stopAlertSound() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+    }
+
+
+    private void startBlinking() {
+        alertMinimizedIndicator.setVisibility(View.VISIBLE);
+        blinkRunnable = new Runnable() {
+            boolean visible = true;
+            @Override
+            public void run() {
+                alertMinimizedIndicator.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+                visible = !visible;
+                blinkHandler.postDelayed(this, 500);
+            }
+        };
+        blinkHandler.post(blinkRunnable);
+    }
+
+    private void stopBlinking() {
+        if (blinkRunnable != null) blinkHandler.removeCallbacks(blinkRunnable);
+        alertMinimizedIndicator.setVisibility(View.GONE);
+    }
+
+
+    private void showMinimizedIndicator() {
+        if (alertMinimizedIndicator == null) {
+            alertMinimizedIndicator = findViewById(R.id.alertMinimizedIndicator);
+        }
+        alertMinimizedIndicator.setVisibility(View.VISIBLE);
+
+        // Parpadeo
+        ValueAnimator blink = ValueAnimator.ofFloat(0f, 1f);
+        blink.setDuration(500);
+        blink.setRepeatMode(ValueAnimator.REVERSE);
+        blink.setRepeatCount(ValueAnimator.INFINITE);
+        blink.addUpdateListener(anim -> alertMinimizedIndicator.setAlpha((float) anim.getAnimatedValue()));
+        blink.start();
+
+        alertMinimizedIndicator.setOnClickListener(v -> {
+            // Restaurar alerta
+            if (activeAlertDialog != null && isAlertMinimized) {
+                activeAlertDialog.show();
+                isAlertMinimized = false;
+                hideMinimizedIndicator();
+            }
+        });
+    }
+
+    private void hideMinimizedIndicator() {
+        if (alertMinimizedIndicator != null) {
+            alertMinimizedIndicator.setVisibility(View.GONE);
+            alertMinimizedIndicator.animate().cancel();
+        }
+    }
+
+
 
     private void setupLineChart(LineChart chart) {
         chart.getDescription().setEnabled(false);
@@ -522,5 +767,7 @@ public class MainActivity extends AppCompatActivity {
         if (Float.isNaN(v) || Float.isInfinite(v) || v < 0f) return 0f;
         return v;
     }
+
+
 
 }

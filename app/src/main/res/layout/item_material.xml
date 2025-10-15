@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    card_view:cardUseCompatPadding="true"
+    android:backgroundTint="@color/air_quality_good"
     card_view:cardCornerRadius="16dp"
-    card_view:cardElevation="4dp">
+    card_view:cardElevation="4dp"
+    card_view:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/background_coffee"
         android:orientation="horizontal"
         android:padding="12dp">
 
@@ -18,32 +20,34 @@
             android:id="@+id/imgMaterial"
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:scaleType="centerCrop"
             android:contentDescription="@string/app_name"
+            android:scaleType="centerCrop"
             android:src="@drawable/home" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/txtName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
+                android:text="Nombre"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
-                android:text="Nombre" />
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txtDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="2"
                 android:ellipsize="end"
-                android:text="Descripción" />
+                android:maxLines="2"
+                android:text="Descripción"
+                android:textColor="#FFFFFF" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chips"
@@ -55,19 +59,25 @@
                     android:id="@+id/chipClasif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="clasificación" />
+                    android:backgroundTint="@color/air_quality_good"
+                    android:text="clasificación"
+                    android:textColor="#FFFFFF" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipAptitud"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="aptitud" />
+                    android:backgroundTint="@color/air_quality_good"
+                    android:text="aptitud"
+                    android:textColor="#FFFFFF" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipCategoria"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="categoría" />
+                    android:backgroundTint="@color/air_quality_good"
+                    android:text="categoría"
+                    android:textColor="#FFFFFF" />
             </com.google.android.material.chip.ChipGroup>
         </LinearLayout>
     </LinearLayout>

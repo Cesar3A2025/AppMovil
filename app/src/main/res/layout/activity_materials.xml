@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.materials.MaterialsActivity"
+    android:background="@drawable/activity_backdround"
 
     >
 
@@ -39,13 +40,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="3"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="6dp"
+                >
 
                 <Spinner
                     android:id="@+id/spnClasificacion"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1" />
+                    android:layout_weight="1"
+                    />
 
                 <Spinner
                     android:id="@+id/spnAptitud"

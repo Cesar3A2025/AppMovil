@@ -7,6 +7,7 @@ public final class ApiRoutes {
     // 192.168.0.8
     // http://192.168.0.55/composta_esp33/public/
     public static final String BASE = "https://compos.alwaysdata.net/api";
+    public static final String BASE_IMAGES = "https://compos.alwaysdata.net";
 
     // Users (según UserController.php)
     public static final String LOGIN           = BASE + "/login";
@@ -24,4 +25,7 @@ public final class ApiRoutes {
     public static final String EXPORT_READINGS_XLSX = BASE + "/export_readings_xlsx";
     public static final String EXPORT_SALES_PDF = BASE + "/export_sales_pdf";
     public static final String EXPORT_SALES_XLSX = BASE + "/export_sales_xlsx";
+
+    // Alerts (según AlertController.php)
+    public static final String ALERTS = BASE + "/get_alerts";
 }

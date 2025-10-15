@@ -1,6 +1,7 @@
 package com.example.proyectomovil.ui.materials;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -9,11 +10,11 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.proyectomovil.R;
+import com.example.proyectomovil.data.api.ApiRoutes;
 
 public class MaterialDetailActivity extends AppCompatActivity {
-
-    TextView txtId, txtName, txtClasif, txtAptitud, txtAdvice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,16 +31,31 @@ public class MaterialDetailActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra("name");
         String clasification = getIntent().getStringExtra("clasification");
         String aptitude = getIntent().getStringExtra("aptitude");
-
+        String imagePath = getIntent().getStringExtra("image"); // ruta que viene del intent
 
         TextView txtName = findViewById(R.id.txtName);
         TextView txtClasif = findViewById(R.id.txtClasif);
         TextView txtAptitud = findViewById(R.id.txtAptitud);
         TextView txtAdvice = findViewById(R.id.txtAdvice);
+        ImageView imgImagen = findViewById(R.id.imgImagen);
 
         txtName.setText(name);
-        txtClasif.setText( clasification);
+        txtClasif.setText(clasification);
         txtAptitud.setText(aptitude);
+
+        // Construir URL completa
+        String imageUrl = null;
+        if (imagePath != null && !imagePath.isEmpty()) {
+            imageUrl = imagePath.startsWith("http")
+                    ? imagePath
+                    : ApiRoutes.BASE_IMAGES + (imagePath.startsWith("/") ? "" : "/") + imagePath;
+        }
+
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.home)
+                .error(R.drawable.home)
+                .into(imgImagen);
 
         switch (id) {
             case 1:

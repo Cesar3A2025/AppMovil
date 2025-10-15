@@ -1,9 +1,15 @@
 package com.example.proyectomovil.ui.materials;
 
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
@@ -13,45 +19,41 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
-
 import com.example.proyectomovil.R;
 import com.example.proyectomovil.data.api.ApiRoutes;
 import com.example.proyectomovil.data.repository.MaterialsRepository;
 import com.example.proyectomovil.domain.models.Materials;
-import com.example.proyectomovil.utils.Result;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.example.proyectomovil.ui.base.BaseDrawerActivity;
+import android.graphics.Color;
 
-public class MaterialsActivity extends AppCompatActivity {
+import android.graphics.PorterDuff;
+import android.widget.EditText;
+import android.widget.ImageView;
 
-    // Mantengo los nombres originales
-    private static final String BASE_API = ApiRoutes.MATERIALS;
-    private static final String BASE_IMAGES = ApiRoutes.BASE.endsWith("/api")
-            ? ApiRoutes.BASE.substring(0, ApiRoutes.BASE.length() - 4) + "/"
-            : ApiRoutes.BASE + "/";
+public class MaterialsActivity extends BaseDrawerActivity {
 
     private RecyclerView rv;
     private SwipeRefreshLayout swipe;
     private SearchView searchView;
     private Spinner spnClasif, spnAptitud, spnCategoria;
+
     private final List<Materials> fullList = new ArrayList<>();
     private final List<Materials> filteredList = new ArrayList<>();
 
     private MaterialsAdapter adapter;
-
     private final MaterialsRepository repo = new MaterialsRepository();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_materials);
+        // setContentView(R.layout.activity_materials);
+        // Muestra activity_materials.xml DENTRO del drawer
+        setContentWithDrawer(R.layout.activity_materials);
+        setTitle("Materiales");
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -65,23 +67,124 @@ public class MaterialsActivity extends AppCompatActivity {
         spnClasif = findViewById(R.id.spnClasificacion);
         spnAptitud = findViewById(R.id.spnAptitud);
         spnCategoria = findViewById(R.id.spnCategoria);
+        // ✅ CONFIGURAR SEARCHVIEW INMEDIATAMENTE DESPUÉS DE FINDVIEWBYID
+        setupSearchViewWhiteStyle();
 
-        // Recycler + Adapter
+        // RecyclerView + Adapter
         rv.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new MaterialsAdapter(this, filteredList, BASE_IMAGES);
+        adapter = new MaterialsAdapter(this, filteredList);
         rv.setAdapter(adapter);
 
-        // Spinners (valores por defecto usados de BD)
+        // Inicializar spinners
         setupSpinners();
-        // Search
+
+        // Búsqueda
         setupSearch();
 
         // Pull-to-refresh
         swipe.setOnRefreshListener(this::fetchMaterials);
 
-        // Cargar datos
+        // Primera carga
         swipe.setRefreshing(true);
         fetchMaterials();
+    }
+
+    private void setupSearchViewWhiteStyle() {
+        try {
+            // Método más agresivo - buscar por todos los elementos posibles
+            searchView.setIconifiedByDefault(false);
+
+            // Buscar el EditText por todos los IDs posibles
+            EditText searchEditText = null;
+            int[] possibleIds = {
+                    androidx.appcompat.R.id.search_src_text,  // ID de AndroidX
+                    getResources().getIdentifier("android:id/search_src_text", null, null)
+            };
+
+            for (int id : possibleIds) {
+                View view = searchView.findViewById(id);
+                if (view instanceof EditText) {
+                    searchEditText = (EditText) view;
+                    break;
+                }
+            }
+
+            if (searchEditText != null) {
+                searchEditText.setTextColor(Color.WHITE);
+                searchEditText.setHintTextColor(Color.parseColor("#B3FFFFFF"));
+                searchEditText.setBackgroundTintList(android.content.res.ColorStateList.valueOf(Color.WHITE));
+            }
+
+            // 🔹 ICONO DE BÚSQUEDA (Lupa) - Múltiples formas
+            int searchIconId = androidx.appcompat.R.id.search_mag_icon;
+            ImageView searchIcon = searchView.findViewById(searchIconId);
+            if (searchIcon != null) {
+                searchIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            } else {
+                // Intentar con el ID del sistema
+                int systemSearchIconId = getResources().getIdentifier("android:id/search_mag_icon", null, null);
+                ImageView systemSearchIcon = searchView.findViewById(systemSearchIconId);
+                if (systemSearchIcon != null) {
+                    systemSearchIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            // 🔹 ICONO DE CERRAR (X) - Múltiples formas
+            int closeIconId = androidx.appcompat.R.id.search_close_btn;
+            ImageView closeIcon = searchView.findViewById(closeIconId);
+            if (closeIcon != null) {
+                closeIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            } else {
+                // Intentar con el ID del sistema
+                int systemCloseIconId = getResources().getIdentifier("android:id/search_close_btn", null, null);
+                ImageView systemCloseIcon = searchView.findViewById(systemCloseIconId);
+                if (systemCloseIcon != null) {
+                    systemCloseIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            // 🔹 ICONO DE VOZ (Opcional)
+            int voiceIconId = androidx.appcompat.R.id.search_voice_btn;
+            ImageView voiceIcon = searchView.findViewById(voiceIconId);
+            if (voiceIcon != null) {
+                voiceIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            } else {
+                int systemVoiceIconId = getResources().getIdentifier("android:id/search_voice_btn", null, null);
+                ImageView systemVoiceIcon = searchView.findViewById(systemVoiceIconId);
+                if (systemVoiceIcon != null) {
+                    systemVoiceIcon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                }
+            }
+
+            // 🔹 BUSCAR TODOS LOS ImageView Y APLICAR BLANCO
+            List<ImageView> allIcons = findAllImageViews(searchView);
+            for (ImageView icon : allIcons) {
+                icon.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+            }
+
+            // Configurar iconos usando tint
+            searchView.setIconifiedByDefault(true);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 🔹 MÉTODO AUXILIAR PARA ENCONTRAR TODOS LOS ImageView
+    private List<ImageView> findAllImageViews(View view) {
+        List<ImageView> imageViews = new ArrayList<>();
+        if (view instanceof ViewGroup) {
+            ViewGroup viewGroup = (ViewGroup) view;
+            for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                View child = viewGroup.getChildAt(i);
+                if (child instanceof ImageView) {
+                    imageViews.add((ImageView) child);
+                } else if (child instanceof ViewGroup) {
+                    imageViews.addAll(findAllImageViews(child));
+                }
+            }
+        }
+        return imageViews;
     }
 
     private void setupSpinners() {
@@ -89,18 +192,110 @@ public class MaterialsActivity extends AppCompatActivity {
         String[] aptitudes = new String[]{"todas", "casero", "industrial", "no_recomendado"};
         String[] categorias = new String[]{"todas", "alimentos", "jardin", "papel_carton", "otros"};
 
-        spnClasif.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, clasificaciones));
-        spnAptitud.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, aptitudes));
-        spnCategoria.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categorias));
+        // Crear adapter personalizado con texto blanco
+        ArrayAdapter<String> whiteAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                clasificaciones
+        ) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    TextView textView = (TextView) view;
+                    textView.setTextColor(Color.WHITE);
+                    textView.setBackgroundColor(Color.parseColor("#FF424242")); // Fondo gris oscuro
+                }
+                return view;
+            }
+        };
+
+        whiteAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Aplicar el adapter a todos los spinners
+        spnClasif.setAdapter(whiteAdapter);
+
+        // Crear nuevos adapters para los otros spinners (pueden reutilizar la misma lógica)
+        ArrayAdapter<String> aptitudAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                aptitudes
+        ) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    TextView textView = (TextView) view;
+                    textView.setTextColor(Color.WHITE);
+                    textView.setBackgroundColor(Color.parseColor("#FF424242"));
+                }
+                return view;
+            }
+        };
+        aptitudAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnAptitud.setAdapter(aptitudAdapter);
+
+        ArrayAdapter<String> categoriaAdapter = new ArrayAdapter<String>(
+                this,
+                android.R.layout.simple_spinner_item,
+                categorias
+        ) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                View view = super.getView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                }
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                if (view instanceof TextView) {
+                    TextView textView = (TextView) view;
+                    textView.setTextColor(Color.WHITE);
+                    textView.setBackgroundColor(Color.parseColor("#FF424242"));
+                }
+                return view;
+            }
+        };
+        categoriaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnCategoria.setAdapter(categoriaAdapter);
 
         AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // al cambiar filtros -> pedir al servidor
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                // Asegurar que el texto seleccionado sea blanco
+                if (view instanceof TextView) {
+                    ((TextView) view).setTextColor(Color.WHITE);
+                }
                 swipe.setRefreshing(true);
                 fetchMaterials();
             }
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) { }
         };
+
         spnClasif.setOnItemSelectedListener(listener);
         spnAptitud.setOnItemSelectedListener(listener);
         spnCategoria.setOnItemSelectedListener(listener);
@@ -108,35 +303,31 @@ public class MaterialsActivity extends AppCompatActivity {
 
     private void setupSearch() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override public boolean onQueryTextSubmit(String query) {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
                 swipe.setRefreshing(true);
-                fetchMaterials(); // buscar en servidor
+                fetchMaterials();
                 return true;
             }
-            @Override public boolean onQueryTextChange(String newText) {
-                // Si prefieres búsqueda “en vivo” al teclear:
-                // swipe.setRefreshing(true);
-                // fetchMaterials();
-                // Por ahora, filtramos en cliente mientras se escribe:
-                applyFiltersAndShow();
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                applyFiltersAndShow(); // filtrado local
                 return true;
             }
         });
     }
-
-    // Llama al repositorio enviando los filtros como query params (según tu MaterialController@index)
     private void fetchMaterials() {
         String query = searchView.getQuery() != null ? searchView.getQuery().toString().trim() : "";
         String clasif = (String) spnClasif.getSelectedItem();
         String apt = (String) spnAptitud.getSelectedItem();
         String cat = (String) spnCategoria.getSelectedItem();
 
-        // Normalizamos “todos/todas” -> null para no enviar ese filtro
+        // Normalizar "todos/todas"
         String qClasif = (clasif != null && !"todos".equalsIgnoreCase(clasif)) ? clasif : null;
         String qApt    = (apt != null && !"todas".equalsIgnoreCase(apt)) ? apt : null;
         String qCat    = (cat != null && !"todas".equalsIgnoreCase(cat)) ? cat : null;
 
-        // Puedes ajustar perPage/sort/dir si quieres (aquí traemos bastante para evitar paginación en cliente)
         int perPage = 200;
         String sort = "created_at";
         String dir  = "desc";
@@ -150,7 +341,7 @@ public class MaterialsActivity extends AppCompatActivity {
             List<Materials> list = result.data != null ? result.data : new ArrayList<>();
             fullList.clear();
             fullList.addAll(list);
-            applyFiltersAndShow(); // aún aplicamos filtro local por si el usuario va escribiendo
+            applyFiltersAndShow();
         }));
     }
 

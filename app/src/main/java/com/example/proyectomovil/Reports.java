@@ -22,10 +22,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import okhttp3.HttpUrl;
+import com.example.proyectomovil.ui.base.BaseDrawerActivity;
 
 import com.example.proyectomovil.data.api.ApiRoutes;
 
-public class Reports extends AppCompatActivity {
+public class Reports extends BaseDrawerActivity {
 
     private int userId;
 
@@ -37,7 +38,9 @@ public class Reports extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_reports);
+        //setContentView(R.layout.activity_reports);
+        setContentWithDrawer(R.layout.activity_reports);
+        setTitle("Reportes");
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());

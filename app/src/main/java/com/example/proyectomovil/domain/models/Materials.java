@@ -10,7 +10,7 @@ import java.util.List;
 public class Materials {
     private int id;
     private String name;
-    private String image;
+    private String image;         // <-- aquí guardamos image_url del backend
     private String description;
     private String clasification;
     private String aptitude;
@@ -72,7 +72,7 @@ public class Materials {
             Materials m = new Materials();
             m.setId(o.optInt("id"));
             m.setName(o.optString("name"));
-            m.setImage(o.optString("image", null));
+            m.setImage(o.optString("image_url", null)); // <-- CORREGIDO
             m.setDescription(o.optString("description"));
             m.setClasification(o.optString("clasification"));
             m.setAptitude(o.optString("aptitude"));

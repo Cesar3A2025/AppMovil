@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -16,6 +17,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProyectoMovil"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Settings"
+            android:exported="false" />
+        <activity
+            android:name=".ui.base.BaseDrawerActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.history.HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.history.HistoryAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".ui.materials.NoCompostableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.materials.BrownActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.materials.GreenActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.materials.MaterialDetailActivity"
             android:exported="false" />

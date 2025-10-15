@@ -1,0 +1,1212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/fondo"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- Título Principal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🟤 Materiales Marrones"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#b45309"
+            android:gravity="center"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Imagen ilustrativa LOCAL -->
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/materiales_marrones"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="Materiales marrones para compostaje" />
+
+        <!-- Sección: ¿Qué son los Materiales Marrones? -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📋 ¿Qué son los Materiales Marrones?"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Los materiales marrones son aquellos ricos en carbono, esenciales para proporcionar energía a los microorganismos que descomponen la materia orgánica. Son generalmente secos, duros y de color marrón."
+            android:textSize="14sp"
+            android:textColor="#374151"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="24dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d1d5db"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Beneficios Clave -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🟤 Beneficios Clave"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Proporcionan carbono necesario para la energía de los microorganismos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Mantienen la estructura del compost permitiendo una buena aireación"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Controlan la humedad absorbiendo el exceso de líquidos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Previenen malos olores y compactación"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"/>
+        </LinearLayout>
+
+        <!-- Sección: Proporción Recomendada -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📊 Proporción Recomendada"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="2 partes de materiales marrones : 1 parte de materiales verdes"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:gravity="center"
+            android:padding="16dp"
+            android:background="#fefce8"
+            android:backgroundTint="#fefce8"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Lista de Materiales Marrones Aceptados -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🍂 Lista de Materiales Marrones Aceptados"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Alta Disponibilidad de Carbono -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✅ Alta Disponibilidad de Carbono"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b45309"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Hojas secas (roble, arce, etc.)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Paja y heno seco"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Ramitas y pequeñas ramas trituradas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Serrín y virutas de madera natural (no tratada)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cartón sin tintas tóxicas (troceado)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Periódico triturado (solo papel sin colorantes)"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Moderada Disponibilidad de Carbono -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✅ Moderada Disponibilidad de Carbono"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#d97706"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cáscaras de huevo trituradas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Bolsa de papel marrón triturado"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Tallos secos de plantas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Aserrín de carpintería (madera no tratada)"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Precauciones Importantes -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠️ Precauciones Importantes"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Tabla de Precauciones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="24dp">
+
+            <!-- Header de la tabla -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#fef3c7"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Riesgo"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Solución"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <!-- Fila 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Falta de humedad"
+                    android:textColor="#374151"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Añadir agua o materiales verdes"
+                    android:textColor="#374151"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <!-- Fila 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#f8fafc">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Proceso de compostaje lento"
+                    android:textColor="#374151"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Aumentar proporción de materiales verdes"
+                    android:textColor="#374151"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+
+            <!-- Fila 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Materiales demasiado grandes"
+                    android:textColor="#374151"
+                    android:textSize="14sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Triturar o cortar en trozos pequeños"
+                    android:textColor="#374151"
+                    android:textSize="14sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sección: Materiales Marrones a Evitar -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🚫 Materiales Marrones a Evitar"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Madera tratada con productos químicos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Papel brillante o con tintas de colores"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cartón plastificado o con recubrimientos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cenizas de carbón o de madera tratada"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Restos de plantas enfermas o con pesticidas"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Técnicas de Preparación -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✂️ Técnicas de Preparación"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Trituración y Corte -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Trituración y Corte"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Triturar hojas secas y ramas para acelerar descomposición"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cortar cartón y papel en tiras de 2-5 cm"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Usar trituradora manual o mecánica para materiales duros"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Mezcla Ideal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mezcla Ideal"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fffbeb"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="material_marrón = 60-70% del total"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="material_verde = 25-30% del total"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="tierra = 10% del total"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d1d5db"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Señales de Problemas y Soluciones -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔍 Señales de Problemas y Soluciones"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Tabla de Problemas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="24dp">
+
+            <!-- Header de la tabla -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#fef3c7"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Problema"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Causa"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Solución"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Compost muy seco"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Exceso de materiales marrones"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Añadir agua o materiales verdes"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#f8fafc">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Proceso muy lento"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Falta de nitrógeno"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Aumentar materiales verdes"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Material sin descomponer"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Trozos demasiado grandes"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Triturar más finamente"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sección: Monitoreo con Sistema IoT -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📈 Monitoreo con Nuestro Sistema IoT"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Parámetros Ideales -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Parámetros Ideales con Materiales Marrones"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Temperatura: 45-60°C"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Humedad: 40-50% (ligeramente menor que con verdes)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Relación C/N: 25:1 a 30:1"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Textura: esponjosa y bien aireada"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Alertas Automáticas -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alertas Automáticas"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nuestro sistema te notificará cuando:"
+            android:textSize="14sp"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📱 La humedad baje del 30% (necesita riego urgente)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📱 La temperatura sea inferior a 40°C (proceso lento)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📱 Se detecte compactación excesiva"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Ejemplos Prácticos -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🌱 Ejemplos Prácticos"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Compostaje Equilibrado -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#dbeafe"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Compostaje Equilibrado"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1e40af"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Materiales marrones (hojas secas, cartón): 4.0 kg"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Materiales verdes (restos de cocina): 2.0 kg"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Tierra: 0.5 kg"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Agua: 0.1 L (aplicada con sistema automático)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● 🔢 Masa total inicial: 6.6 kg"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● ⏳ Tiempo estimado: 40-50 días"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● ✅ Rendimiento: 95% de la masa inicial"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● ⚖️ Peso final: 6.3 kg de compost maduro"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Compostaje con Exceso de Marrones -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fffbeb"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Compostaje con Exceso de Marrones"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#b45309"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Materiales marrones: 8 kg"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Materiales verdes: 1 kg"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• ⏳ Tiempo estimado de proceso: 90-120 días"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• ⚠️ Resultado: Proceso muy lento, compost seco"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Consejos Expertos -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💡 Consejos Expertos"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Para Principiantes -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Para Principiantes"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#d97706"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Empieza con hojas secas y cartón marrón triturado"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Mantén una reserva de materiales marrones para ajustar humedad"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Observa la textura del compost semanalmente"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Para Avanzados -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Para Avanzados"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b45309"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Experimenta con diferentes tipos de materiales marrones"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Combina diferentes texturas para mejor aireación"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Pre-composta materiales muy leñosos antes de añadirlos"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d1d5db"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Integración con Plataforma -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔄 Integración con Nuestra Plataforma"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- En la App Móvil -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="En la App Móvil:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b45309"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📈 Gráficos de evolución del compost en tiempo real"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• ⏰ Recibe recordatorios para voltear"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📋 Inventario de materiales disponibles"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 🔔 Alertas cuando necesites añadir materiales"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- En la Web -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="En la Web:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b45309"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📊 Dashboard - Visualización principal con gráficos y datos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📦 Gestión de Productos - Registrar y gestionar productos de compost"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 🧾 Gestión de Comprobantes - Emitir comprobantes digitales"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 🌿 Materiales Compostables - Consultar lista con filtros"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 💎 Adquirir Planes - Suscripción a funciones extras"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📈 Gestión de Reportes - Generar reportes de ventas y sensores"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• ⚙️ Cambiar Contraseña - Actualizar credenciales desde perfil"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Mensaje Final -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fffbeb"
+            android:padding="16dp"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🌍 El equilibrio perfecto entre materiales verdes y marrones es clave para un compostaje exitoso"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#92400e"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
