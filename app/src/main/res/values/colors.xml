@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="coffee">#A24007</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="fondo">#E6D7C4</color>
+    <color name="card_beige">#EAD5BE</color>
+    <color name="text_primary">#1E1E1E</color>
+    <color name="text_secondary">#6C6C6C</color>
+    <color name="line_yellow">#F6C90E</color>
+    <color name="line_orange">#FF8A00</color>
+    <color name="line_blue">#00A3FF</color>
+    <color name="grid_line">#EAEAEA</color>
+    <color name="card_background">#FEF7FF</color>
+    <color name="air_quality_good">#2E7D32</color>
+    <color name="air_quality_moderate">#F9A825</color>
+    <color name="air_quality_bad">#D32F2F</color>
+    <color name="md_theme_primary">#0B5FFF</color>    <!-- Azul vibrante -->
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_onSurface">#111827</color>
+    <color name="md_theme_onSurfaceVariant">#6B7280</color>
+    <color name="md_theme_outline">#E5E7EB</color>
+    <color name="accent_blue">#2563EB</color> <!-- para estado de aire -->
+    <color name="card_stroke_modern">#1AFFFFFF</color>
+    <color name="card_background_modern">#FF0F1A2F</color>
+
+    <!-- Colores para las tarjetas de métricas -->
+    <color name="metric_card_1">#FF4A657F</color>
+    <color name="metric_card_2">#FF5D8AA8</color>
+    <color name="metric_card_3">#FF8FB0C8</color>
+    <color name="metric_card_4">#FFA8C6E1</color>
+    <color name="metric_card_5">#FF6A89A1</color>
+    <color name="metric_card_success">#FF4CAF50</color>
+</resources>
