@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -21,16 +20,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import okhttp3.HttpUrl;
 import com.example.proyectomovil.ui.base.BaseDrawerActivity;
-
 import com.example.proyectomovil.data.api.ApiRoutes;
 
 public class Reports extends BaseDrawerActivity {
 
     private int userId;
-
-    // rango de fechas (yyyy-MM-dd). Se inicializa a últimos 30 días
     private String fromDate;
     private String toDate;
 
@@ -38,7 +33,6 @@ public class Reports extends BaseDrawerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //setContentView(R.layout.activity_reports);
         setContentWithDrawer(R.layout.activity_reports);
         setTitle("Reportes");
 
@@ -50,23 +44,86 @@ public class Reports extends BaseDrawerActivity {
 
         userId = getIntent().getIntExtra("USER_ID", 1);
 
-        // rango por defecto: últimos 30 días
+        // Rango por defecto (últimos 30 días)
         toDate = formatDate(new Date());
         fromDate = formatDate(daysAgo(30));
 
         CardView cardCompostReadings = findViewById(R.id.cardCompostReadings);
         CardView cardVentas = findViewById(R.id.cardCompostSales);
 
-        // Lecturas de compostaje
-        cardCompostReadings.setOnClickListener(v -> pickDateRangeThenFormat("lecturas"));
+        // ✅ Reporte de lecturas con rango predefinido (hoy, 7 o 30 días)
+        cardCompostReadings.setOnClickListener(v -> showReadingsRangeDialog());
 
-        // Ventas de compostaje
+        // ✅ Reporte de ventas con calendario personalizado
         cardVentas.setOnClickListener(v -> pickDateRangeThenFormat("ventas"));
     }
 
-    /** Paso 1: pedir rango de fechas (from/to). Luego muestra selección de formato. */
+    // ------------------------------------------------------------
+    // 🔹 Selección de rango para lecturas (Hoy / 7 / 30 días)
+    // ------------------------------------------------------------
+    // ------------------------------------------------------------
+// 🔹 Selección de rango y formato para lecturas
+// ------------------------------------------------------------
+    private void showReadingsRangeDialog() {
+        String[] rangeOptions = {"Hoy", "Últimos 7 días", "Últimos 30 días"};
+        String[] rangeValues = {"day", "week", "month"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Seleccione el rango de lectura");
+        builder.setItems(rangeOptions, (dialog, whichRange) -> {
+            String selectedRange = rangeValues[whichRange];
+
+            // ✅ Segundo diálogo: elegir formato
+            AlertDialog.Builder formatDialog = new AlertDialog.Builder(this);
+            formatDialog.setTitle("Seleccione el formato del reporte");
+            String[] formats = {"PDF", "Excel (XLSX)"};
+
+            formatDialog.setItems(formats, (dialog2, whichFormat) -> {
+                String format = formats[whichFormat].toLowerCase().contains("pdf") ? "pdf" : "xlsx";
+                String url;
+                String fileName;
+
+                if (format.equals("pdf")) {
+                    url = ApiRoutes.DOWNLOAD_READINGS_PDF
+                            + "?range=" + selectedRange
+                            + "&idUser=" + userId;
+                    fileName = "reporte_lecturas_" + selectedRange + ".pdf";
+                } else {
+                    url = ApiRoutes.EXPORT_READINGS_XLSX
+                            + "?range=" + selectedRange
+                            + "&idUser=" + userId;
+                    fileName = "reporte_lecturas_" + selectedRange + ".xlsx";
+                }
+
+                try {
+                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+                    request.setTitle("Descargando reporte de lecturas");
+                    request.setDescription("Rango: " + rangeOptions[whichRange] + " • Formato: " + format.toUpperCase());
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+                    DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
+                    if (dm != null) {
+                        dm.enqueue(request);
+                        Toast.makeText(this, "Descarga iniciada...", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Toast.makeText(this, "Error en descarga: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+
+            formatDialog.setNegativeButton("Cancelar", null);
+            formatDialog.show();
+        });
+
+        builder.setNegativeButton("Cancelar", null);
+        builder.show();
+    }
+
+    // ------------------------------------------------------------
+    // 🔹 Calendario para seleccionar fechas (solo para ventas)
+    // ------------------------------------------------------------
     private void pickDateRangeThenFormat(String tipo) {
-        // 1) pick FROM
         Calendar calFrom = Calendar.getInstance();
         DatePickerDialog dpFrom = new DatePickerDialog(
                 this,
@@ -75,7 +132,6 @@ public class Reports extends BaseDrawerActivity {
                     selFrom.set(y, m, d, 0, 0, 0);
                     fromDate = formatDate(selFrom.getTime());
 
-                    // 2) pick TO
                     Calendar calTo = Calendar.getInstance();
                     DatePickerDialog dpTo = new DatePickerDialog(
                             this,
@@ -83,7 +139,6 @@ public class Reports extends BaseDrawerActivity {
                                 Calendar selTo = Calendar.getInstance();
                                 selTo.set(y2, m2, d2, 23, 59, 59);
                                 toDate = formatDate(selTo.getTime());
-                                // 3) elegir formato
                                 showFormatSelectionDialog(tipo);
                             },
                             calTo.get(Calendar.YEAR),
@@ -101,7 +156,6 @@ public class Reports extends BaseDrawerActivity {
         dpFrom.show();
     }
 
-    /** Paso 2: elegir formato PDF/XLSX */
     private void showFormatSelectionDialog(String tipo) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Seleccione el formato del reporte");
@@ -109,9 +163,9 @@ public class Reports extends BaseDrawerActivity {
         String[] formats = {"PDF", "Excel (XLSX)"};
         builder.setItems(formats, (dialog, which) -> {
             if (which == 0) {
-                downloadFile(tipo, "pdf");
+                downloadSalesReport("pdf");
             } else {
-                downloadFile(tipo, "xlsx");
+                downloadSalesReport("xlsx");
             }
         });
 
@@ -119,50 +173,47 @@ public class Reports extends BaseDrawerActivity {
         builder.show();
     }
 
-    /** Paso 3: armar URL según tipo/formato + rango de fechas y lanzar DownloadManager */
-    private void downloadFile(String tipo, String formato) {
-        String endpoint, fileName;
+    // ------------------------------------------------------------
+    // 🔹 Generación del reporte de ventas
+    // ------------------------------------------------------------
+    private void downloadSalesReport(String formato) {
+        String url;
+        String fileName;
 
-        if ("lecturas".equals(tipo)) {
-            endpoint = "pdf".equalsIgnoreCase(formato)
-                    ? ApiRoutes.EXPORT_READINGS_PDF
-                    : ApiRoutes.EXPORT_READINGS_XLSX;
-            fileName = "lecturas_compostaje." + formato.toLowerCase();
-        } else { // ventas
-            endpoint = "pdf".equalsIgnoreCase(formato)
-                    ? ApiRoutes.EXPORT_SALES_PDF
-                    : ApiRoutes.EXPORT_SALES_XLSX;
-            fileName = "ventas_compostaje_" + fromDate + "_a_" + toDate + "." + formato.toLowerCase();
+        if ("pdf".equalsIgnoreCase(formato)) {
+            url = ApiRoutes.DOWNLOAD_SALES_PDF
+                    + "?from=" + fromDate
+                    + "&to=" + toDate
+                    + "&idUser=" + userId;
+        } else {
+            url = ApiRoutes.EXPORT_SALES_XLSX
+                    + "?from=" + fromDate
+                    + "&to=" + toDate
+                    + "&idUser=" + userId;
         }
 
+        fileName = "ventas_compostaje_" + fromDate + "_a_" + toDate + "." + formato.toLowerCase();
+
         try {
-            HttpUrl.Builder builder = HttpUrl.parse(endpoint).newBuilder()
-                    .addQueryParameter("idUser", String.valueOf(userId));
-
-            // Solo ventas requieren rango
-            if ("ventas".equals(tipo)) {
-                builder.addQueryParameter("from", fromDate)
-                        .addQueryParameter("to",   toDate);
-            }
-
-            HttpUrl url = builder.build();
-
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url.toString()));
-            request.setTitle("Descargando reporte de " + tipo);
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+            request.setTitle("Descargando reporte de ventas");
             request.setDescription("Formato: " + formato.toUpperCase());
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
             request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
 
             DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            manager.enqueue(request);
-
-            Toast.makeText(this, "Descarga iniciada...", Toast.LENGTH_SHORT).show();
+            if (manager != null) {
+                manager.enqueue(request);
+                Toast.makeText(this, "Descarga iniciada...", Toast.LENGTH_SHORT).show();
+            }
         } catch (Exception e) {
             Toast.makeText(this, "Error en descarga: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
-    // --------- helpers ---------
+    // ------------------------------------------------------------
+    // 🔹 Utilidades
+    // ------------------------------------------------------------
     private String formatDate(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date);
     }

@@ -21,10 +21,12 @@ public final class ApiRoutes {
     // Materials (según MaterialController.php)
     public static final String MATERIALS       = BASE + "/materials";
 
-    public static final String EXPORT_READINGS_PDF = BASE + "/export_readings_pdf";
     public static final String EXPORT_READINGS_XLSX = BASE + "/export_readings_xlsx";
-    public static final String EXPORT_SALES_PDF = BASE + "/export_sales_pdf";
     public static final String EXPORT_SALES_XLSX = BASE + "/export_sales_xlsx";
+
+    public static final String DOWNLOAD_SALES_PDF = BASE + "/export_sales_pdf";
+    public static final String DOWNLOAD_READINGS_PDF = BASE + "/export_readings_pdf";
+
 
     // Alerts (según AlertController.php)
     public static final String ALERTS = BASE + "/get_alerts";
