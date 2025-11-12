@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home"
+        android:title="Inicio" />
+    <item
+        android:id="@+id/nav_historial"
+        android:icon="@drawable/history"
+        android:title="Historial de Lecturas" />
+    <item
+        android:id="@+id/nav_reports"
+        android:icon="@drawable/report"
+        android:title="Reportes" />
+    <!-- 🚀 Nuevo botón Historial -->
+
+
+    <item
+        android:id="@+id/nav_materials"
+        android:icon="@drawable/materials"
+        android:title="Materiales" />
+
+    <item
+        android:id="@+id/nav_customers"
+        android:icon="@drawable/user"
+        android:title="Perfil" />
+
+
+    <item
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/settings"
+        android:title="Configuración de Alertas" />
+
+    <item
+        android:id="@+id/nav_log_out"
+        android:icon="@drawable/log_out"
+        android:title="Cerrar Sesión" />
+
+</menu>

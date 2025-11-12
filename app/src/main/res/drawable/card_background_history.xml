@@ -1,0 +1,14 @@
+<!-- res/drawable/card_background_history.xml -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?android:attr/colorControlHighlight">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#F9FAFB"
+                android:endColor="#FFFFFF"
+                android:angle="90"/>
+            <corners android:radius="16dp"/>
+            <stroke android:width="1dp" android:color="#E5E7EB"/>
+        </shape>
+    </item>
+</ripple>

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">ProyectoMovil</string>
+    <string name="temp_icon">Temperaruta Ambiente</string>
+    <string name="humidity_icon">Humedad Ambiente</string>
+    <string name="mq135_icon">Consentracion de gases</string>
+    <string name="air_quality_icon">Estado de Composta</string>
+    <string name="temp_soil_icon">Temperatura Suelo</string>
+    <string name="soil_icon">Humedad Suelo</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+</resources>

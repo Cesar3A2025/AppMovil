@@ -1,0 +1,1322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/fondo"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+        <!-- Título Principal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🚫 Materiales No Compostables"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#b91c1c"
+            android:gravity="center"
+            android:layout_marginBottom="32dp"/>
+
+        <!-- Imagen ilustrativa LOCAL -->
+        <ImageView
+            android:id="@+id/headerImage"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/materiales_no_compostables"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="32dp"
+            android:contentDescription="Materiales no compostables que deben evitarse" />
+
+        <!-- Sección: ¿Qué son los Materiales No Compostables? -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📋 ¿Qué son los Materiales No Compostables?"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Los materiales no compostables son aquellos que no deben incluirse en el proceso de compostaje debido a que pueden causar problemas de salud, contaminación ambiental, atraer plagas o ralentizar el proceso de descomposición."
+            android:textSize="14sp"
+            android:textColor="#374151"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="24dp"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d1d5db"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Riesgos y Peligros Principales -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠️ Riesgos y Peligros Principales"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Proliferación de bacterias patógenas y enfermedades"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Atracción de roedores, moscas y otras plagas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Generación de malos olores por descomposición anaeróbica"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Contaminación del compost con sustancias tóxicas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Acumulación de materiales no biodegradables"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Inhibición del proceso de compostaje natural"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:lineSpacingExtra="4dp"/>
+        </LinearLayout>
+
+        <!-- Sección: Impacto en el Proceso -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📊 Impacto en el Proceso de Compostaje"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Incluir solo un 5% de materiales no compostables puede arruinar el 100% de tu compost"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:gravity="center"
+            android:padding="16dp"
+            android:background="#fef2f2"
+            android:backgroundTint="#fef2f2"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Lista Completa de Materiales No Compostables -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🚫 Lista Completa de Materiales No Compostables"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Productos de Origen Animal -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="❌ Productos de Origen Animal"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b91c1c"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Carne, pescado y mariscos (crudos o cocidos)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Huesos de cualquier tipo"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Productos lácteos (leche, queso, yogurt, mantequilla)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Grasas, aceites y manteca animal"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Huevos (excepto cáscaras limpias)"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Materiales Procesados y Sintéticos -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="❌ Materiales Procesados y Sintéticos"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#dc2626"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Plásticos de cualquier tipo (bolsas, envases, films)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Vidrio, metal y aluminio"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Papel plastificado, encerado o con tintas tóxicas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Telas sintéticas y productos textiles no naturales"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Productos de limpieza y químicos domésticos"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Residuos Sanitarios y Peligrosos -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="❌ Residuos Sanitarios y Peligrosos"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#ef4444"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Pañales desechables y toallas sanitarias"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Papel higiénico usado y productos de higiene personal"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Medicamentos y productos farmacéuticos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Pilas, baterías y componentes electrónicos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Colillas de cigarro y cenizas de carbón"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Plantas y Materiales Problemáticos -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="❌ Plantas y Materiales Problemáticos"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#f87171"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Plantas enfermas o con pesticidas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Malezas persistentes con semillas maduras"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Hojas de nogal (contienen juglona, un inhibidor natural)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Restos de comida con exceso de sal o aceite"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Heces de perros, gatos o humanos"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Problemas Específicos y Soluciones -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠️ Problemas Específicos y Soluciones"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Tabla de Problemas -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="24dp">
+
+            <!-- Header de la tabla -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#fee2e2"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Material Problemático"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Problema Causado"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Solución"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Carne y lácteos"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Atraen plagas y mal olor"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Contenedor orgánicos no compostables"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#f8fafc">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Plásticos y vidrios"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Contaminación física"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Separar para reciclaje"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Plantas enfermas"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Propagación enfermedades"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Incineración especial"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 4 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#f8fafc">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Productos químicos"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Toxicidad microorganismos"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Puntos limpios especiales"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sección: Alternativas de Disposición -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="♻️ Alternativas de Disposición Correcta"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Gestión por Categorías -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Gestión por Categorías"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#f0fdf4"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Reciclables: Plásticos, vidrios, metales, cartones limpios → Contenedor de reciclaje"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Peligrosos: Pilas, medicamentos, químicos → Puntos limpios o recolección especial"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Orgánicos no compostables: Carnes, lácteos → Contenedor de restos orgánicos"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sanitarios: Pañales, toallas higiénicas → Contenedor de restos no reciclables"
+                android:textStyle="bold"
+                android:textColor="#374151"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d1d5db"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Señales de Contaminación -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔍 Señales de Contaminación en el Compost"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Tabla de Señales -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/card_background"
+            android:layout_marginBottom="24dp">
+
+            <!-- Header de la tabla -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#fee2e2"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Señal"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Posible Causa"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Acción Correctiva"
+                    android:textStyle="bold"
+                    android:textColor="#1f2937"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Olor putrefacto intenso"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Carne o lácteos"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Retirar material y añadir marrón"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#f8fafc">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Moscas y larvas"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Materiales animales"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cubrir con marrón y voltear"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#ffffff">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Material sin descomponer"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Plásticos o sintéticos"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cribar y retirar contaminantes"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+            <!-- Fila 4 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp"
+                android:background="#f8fafc">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Sin actividad microbiana"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Productos químicos"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Reiniciar compost"
+                    android:textColor="#374151"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Sección: Monitoreo con Sistema IoT -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📈 Monitoreo con Nuestro Sistema IoT"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Detección de Problemas -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Detección de Problemas"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cambios bruscos de temperatura indicando descomposición anaeróbica"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Alteraciones en los niveles de gases (metano, sulfhídrico)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Patrones anormales de humedad y pH"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Alertas Automáticas -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alertas Automáticas"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nuestro sistema te notificará cuando:"
+            android:textSize="14sp"
+            android:textColor="#374151"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📱 Se detecten olores fuertes (niveles anormales de gases)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📱 La temperatura descienda abruptamente (muerte microbiana)"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📱 Se identifiquen materiales no compostables mediante análisis"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Casos Prácticos -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🌱 Casos Prácticos de Contaminación"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Caso: Contaminación por Plásticos -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fef2f2"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Caso: Contaminación por Plásticos"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#b91c1c"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Situación: Usuario añadió bolsas de té con grapas plásticas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Resultado: Microplásticos en el compost final"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Impacto: Contaminación del suelo y plantas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Solución: Cribado exhaustivo y educación sobre materiales"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="● Tiempo de recuperación: 2-3 meses"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Caso: Infestación por Carnes -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fff7ed"
+            android:padding="16dp"
+            android:layout_marginBottom="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Caso: Infestación por Carnes"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#ea580c"
+                android:layout_marginBottom="8dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Situación: Restos de pescado incluidos en el compost"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Resultado: Olores putrefactos y proliferación de moscas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Impacto: Compost inutilizable y problemas vecinales"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="2dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Solución: Eliminación completa y reinicio del proceso"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Sección: Consejos para Evitar Errores -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="💡 Consejos para Evitar Errores"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- Para Principiantes -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Para Principiantes"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#dc2626"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Mantén una lista visible de materiales no permitidos en tu área de compostaje"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Cuando tengas dudas, mejor no añadir el material"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Educa a todos los miembros del hogar sobre qué puede y no puede compostarse"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Para Comunidades y Escuelas -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Para Comunidades y Escuelas"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b91c1c"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Implementa sistemas de etiquetado claro en contenedores"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Realiza sesiones educativas periódicas"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Establece un sistema de monitoreo y retroalimentación"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#d1d5db"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Sección: Integración con Plataforma -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🔄 Integración con Nuestra Plataforma"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#1f2937"
+            android:layout_marginBottom="12dp"/>
+
+        <!-- En la App Móvil -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="En la App Móvil:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b91c1c"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📈 Gráficos de evolución del compost en tiempo real"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• ⏰ Recibe recordatorios para voltear"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📋 Inventario de materiales disponibles"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 🔔 Alertas cuando necesites añadir materiales"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- En la Web -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="En la Web:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#b91c1c"
+            android:layout_marginBottom="8dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="24dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📊 Dashboard - Visualización principal con gráficos y datos"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📦 Gestión de Productos - Registrar y gestionar productos de compost"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 🧾 Gestión de Comprobantes - Emitir comprobantes digitales"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 🌿 Materiales Compostables - Consultar lista con filtros"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 💎 Adquirir Planes - Suscripción a funciones extras"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• 📈 Gestión de Reportes - Generar reportes de ventas y sensores"
+                android:textSize="14sp"
+                android:textColor="#374151"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• ⚙️ Cambiar Contraseña - Actualizar credenciales desde perfil"
+                android:textSize="14sp"
+                android:textColor="#374151"/>
+        </LinearLayout>
+
+        <!-- Mensaje Final -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#fee2e2"
+            android:padding="16dp"
+            android:layout_marginBottom="32dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🌍 Un compostaje responsable comienza con la correcta separación de materiales. ¡Tu atención a los detalles hace la diferencia!"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#991b1b"
+                android:gravity="center"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
